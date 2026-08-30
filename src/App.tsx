@@ -8,14 +8,27 @@ import "./nexus.css";
 
 function App() {
   const [ready, setReady] = useState(false);
+  const [percent, setPercent] = useState(0);
   const introRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const stopScroll = initScrollTracking();
-    const timer = setTimeout(() => setReady(true), 400);
+    const start = performance.now();
+    const duration = 400;
+    let frame: number;
+    const tick = (now: number) => {
+      const elapsed = now - start;
+      setPercent(Math.min(100, Math.round((elapsed / duration) * 100)));
+      if (elapsed < duration) {
+        frame = requestAnimationFrame(tick);
+      }
+    };
+    frame = requestAnimationFrame(tick);
+    const timer = setTimeout(() => setReady(true), duration);
     return () => {
       stopScroll();
       clearTimeout(timer);
+      cancelAnimationFrame(frame);
     };
   }, []);
 
@@ -31,7 +44,10 @@ function App() {
   return (
     <div id="top">
       <div className={`loader ${ready ? "loader-hidden" : ""}`}>
-        <span>NEXUS</span>
+        <div className="loader-inner">
+          <span>NEXUS</span>
+          <span className="loader-percent">LOADING {percent.toString().padStart(2, "0")}%</span>
+        </div>
       </div>
 
       <div className="canvas-fixed">

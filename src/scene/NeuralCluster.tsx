@@ -2,7 +2,7 @@ import { useEffect, useMemo, useRef } from "react";
 import { useFrame } from "@react-three/fiber";
 import * as THREE from "three";
 import { synapseFragment, synapseVertex } from "../shaders/synapse";
-import { CLUSTER_CENTERS, CLUSTER_COLORS } from "./clusters";
+import { DIMENSIONS } from "./clusters";
 
 const NODES_PER_CLUSTER = 14;
 const SPREAD = 1.25;
@@ -12,7 +12,7 @@ type Node = { pos: THREE.Vector3; cluster: number; basePos: THREE.Vector3; phase
 
 function buildNodes(): Node[] {
   const nodes: Node[] = [];
-  CLUSTER_CENTERS.forEach((center, cluster) => {
+  DIMENSIONS.forEach((dim, cluster) => {
     for (let i = 0; i < NODES_PER_CLUSTER; i++) {
       const dir = new THREE.Vector3(
         Math.random() * 2 - 1,
@@ -20,7 +20,7 @@ function buildNodes(): Node[] {
         Math.random() * 2 - 1,
       ).normalize();
       const dist = Math.random() ** 0.5 * SPREAD;
-      const pos = center.clone().addScaledVector(dir, dist);
+      const pos = dim.center.clone().addScaledVector(dir, dist);
       nodes.push({ pos, basePos: pos.clone(), cluster, phase: Math.random() * Math.PI * 2 });
     }
   });
@@ -42,20 +42,20 @@ function buildLines(nodes: Node[]) {
   };
 
   // intra-cluster synapses: each node links to a couple of nearby cluster-mates
-  CLUSTER_CENTERS.forEach((_, cluster) => {
+  DIMENSIONS.forEach((dim, cluster) => {
     const members = nodes.filter((n) => n.cluster === cluster);
     members.forEach((node) => {
       for (let l = 0; l < LINKS_PER_NODE; l++) {
         const other = members[Math.floor(Math.random() * members.length)];
-        if (other !== node) pushSegment(node.basePos, other.basePos, CLUSTER_COLORS[cluster]);
+        if (other !== node) pushSegment(node.basePos, other.basePos, dim.color);
       }
     });
   });
 
   // long tethers: every cluster stays wired to the shared wormhole at the origin
-  CLUSTER_CENTERS.forEach((center, cluster) => {
-    const anchor = center.clone().normalize().multiplyScalar(1.6);
-    pushSegment(center, anchor, CLUSTER_COLORS[cluster]);
+  DIMENSIONS.forEach((dim) => {
+    const anchor = dim.center.clone().normalize().multiplyScalar(1.6);
+    pushSegment(dim.center, anchor, dim.color);
   });
 
   const geometry = new THREE.BufferGeometry();
@@ -70,24 +70,32 @@ export function NeuralCluster() {
   const nodes = useMemo(() => buildNodes(), []);
   const lineGeometry = useMemo(() => buildLines(nodes), [nodes]);
   const meshRef = useRef<THREE.InstancedMesh>(null);
+  const haloRef = useRef<THREE.InstancedMesh>(null);
+  const materialRef = useRef<THREE.MeshStandardMaterial>(null);
   const lineMaterialRef = useRef<THREE.ShaderMaterial>(null);
   const dummy = useMemo(() => new THREE.Object3D(), []);
 
   const synapseUniforms = useMemo(() => ({ uTime: { value: 0 } }), []);
 
   useEffect(() => {
-    if (!meshRef.current) return;
+    if (!meshRef.current || !haloRef.current) return;
     nodes.forEach((node, i) => {
-      meshRef.current!.setColorAt(i, CLUSTER_COLORS[node.cluster]);
+      meshRef.current!.setColorAt(i, DIMENSIONS[node.cluster].color);
+      haloRef.current!.setColorAt(i, DIMENSIONS[node.cluster].color);
     });
     if (meshRef.current.instanceColor) meshRef.current.instanceColor.needsUpdate = true;
+    if (haloRef.current.instanceColor) haloRef.current.instanceColor.needsUpdate = true;
   }, [nodes]);
 
   useFrame((state) => {
     const t = state.clock.getElapsedTime();
     if (lineMaterialRef.current) lineMaterialRef.current.uniforms.uTime.value = t;
 
-    if (meshRef.current) {
+    if (materialRef.current) {
+      materialRef.current.emissiveIntensity = 0.4 + Math.sin(t * 2) * 0.6;
+    }
+
+    if (meshRef.current && haloRef.current) {
       nodes.forEach((node, i) => {
         dummy.position.copy(node.basePos);
         dummy.position.y += Math.sin(t * 0.8 + node.phase) * 0.06;
@@ -96,16 +104,35 @@ export function NeuralCluster() {
         dummy.scale.setScalar(s);
         dummy.updateMatrix();
         meshRef.current!.setMatrixAt(i, dummy.matrix);
+        haloRef.current!.setMatrixAt(i, dummy.matrix);
       });
       meshRef.current.instanceMatrix.needsUpdate = true;
+      haloRef.current.instanceMatrix.needsUpdate = true;
     }
   });
 
   return (
     <>
       <instancedMesh ref={meshRef} args={[undefined, undefined, nodes.length]}>
-        <icosahedronGeometry args={[0.05, 1]} />
-        <meshBasicMaterial toneMapped={false} />
+        <dodecahedronGeometry args={[0.06, 1]} />
+        <meshStandardMaterial
+          ref={materialRef}
+          color="#ffffff"
+          emissive="#404040"
+          emissiveIntensity={0.8}
+          roughness={0.2}
+          metalness={0.8}
+        />
+      </instancedMesh>
+      <instancedMesh ref={haloRef} args={[undefined, undefined, nodes.length]}>
+        <torusGeometry args={[0.09, 0.01, 8, 32]} />
+        <meshBasicMaterial
+          transparent
+          opacity={0.4}
+          toneMapped={false}
+          blending={THREE.AdditiveBlending}
+          depthWrite={false}
+        />
       </instancedMesh>
       <lineSegments geometry={lineGeometry}>
         <shaderMaterial

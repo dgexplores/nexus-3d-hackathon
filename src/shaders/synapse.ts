@@ -22,9 +22,11 @@ export const synapseFragment = /* glsl */ `
   varying vec3 vColor;
 
   void main() {
-    float wave = sin(vProgress * 6.2831853 * 1.5 - uTime * 2.6 + vPhase * 6.2831853) * 0.5 + 0.5;
-    float pulse = pow(wave, 5.0);
-    float glow = 0.1 + pulse * 1.5;
-    gl_FragColor = vec4(vColor * glow, 0.3 + pulse * 0.7);
+    float wave = sin(vProgress * 6.2831853 * 1.5 - uTime * 3.0 + vPhase * 6.2831853) * 0.5 + 0.5;
+    float core = pow(wave, 8.0);
+    float aura = pow(wave, 2.0);
+    vec3 color = vColor * (aura + core * 2.0);
+    float alpha = 0.2 + core * 0.8 + aura * 0.3;
+    gl_FragColor = vec4(color, alpha);
   }
 `;
