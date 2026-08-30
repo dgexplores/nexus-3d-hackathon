@@ -19,7 +19,7 @@ import { CameraRig } from "./CameraRig";
 import { Thread } from "./Thread";
 import { Galaxies, Nebulae } from "./Galaxies";
 import { Planets } from "./Planets";
-import { AsteroidBelt, InnerBelt, StarDome, DeepGalaxies, LensDust, DimensionAtmosphere } from "./SpaceExtension";
+import { AsteroidBelt, InnerBelt, StarDome, DeepGalaxies, LensDust, DimensionAtmosphere, NebulaOrbs, ShootingStars, FogShifter } from "./SpaceExtension";
 import { DIMENSIONS, dimensionWeight } from "./clusters";
 import { scrollState } from "./scrollStore";
 
@@ -92,10 +92,11 @@ export function Scene() {
         <meshStandardMaterial color="#06070d" roughness={0.95} metalness={0} />
       </mesh>
 
-      <StarDome />
+       <StarDome />
       <DeepGalaxies />
       <DimensionAtmosphere />
       <Nebulae />
+      <NebulaOrbs />
       <Galaxies />
       <Planets />
       <AsteroidBelt />
@@ -105,7 +106,9 @@ export function Scene() {
       <Thread />
       <NeuralCluster />
       <Particles />
+      <ShootingStars />
       <CameraRig />
+      <FogShifter />
 
       <EffectComposer multisampling={0}>
         <Bloom

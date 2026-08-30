@@ -3,6 +3,7 @@ import { useFrame } from "@react-three/fiber"
 import * as THREE from "three"
 import { DIMENSIONS, dimensionWeight } from "./clusters"
 import { scrollState } from "./scrollStore"
+import { fresnelVertex, fresnelFragment } from "../shaders/fresnel"
 
 // free PBR planets — no external GLB, procedural senior 8K detail
 // anchored behind each dimension where text mentions them, so what you read is what you see
@@ -49,6 +50,18 @@ function Planet({ pos, radius, color, hasRing, moon, dimIndex }: { pos: THREE.Ve
         <mesh scale={1.06}>
           <sphereGeometry args={[radius, 32, 32]} />
           <meshBasicMaterial color={color} transparent opacity={0.06} blending={THREE.AdditiveBlending} depthWrite={false} side={THREE.BackSide} />
+        </mesh>
+        <mesh scale={1.5}>
+          <sphereGeometry args={[radius, 20, 20]} />
+          <shaderMaterial
+            vertexShader={fresnelVertex}
+            fragmentShader={fresnelFragment}
+            uniforms={{ uColor: { value: new THREE.Color(color) }, uOpacity: { value: 0.03 } }}
+            transparent
+            depthWrite={false}
+            side={THREE.FrontSide}
+            blending={THREE.AdditiveBlending}
+          />
         </mesh>
       </group>
     </group>

@@ -1,8 +1,9 @@
 import { useMemo, useRef, useEffect } from "react"
-import { useFrame } from "@react-three/fiber"
+import { useFrame, useThree } from "@react-three/fiber"
 import * as THREE from "three"
-import { DIMENSIONS, dimensionWeight } from "./clusters"
+import { DIMENSIONS, dimensionWeight, activeDimensionIndex } from "./clusters"
 import { scrollState } from "./scrollStore"
+import { fresnelVertex, fresnelFragment } from "../shaders/fresnel"
 
 function makeGlowTexture(): THREE.CanvasTexture {
   const c = document.createElement("canvas");
@@ -253,4 +254,118 @@ export function LensDust() {
       <pointsMaterial size={0.035} color="#ffd6a6" transparent opacity={0.22} depthWrite={false} blending={THREE.AdditiveBlending} />
     </points>
   )
+}
+
+// Deep cosmic nebula orbs — large fresnel-glow spheres behind everything
+const NEBULA_ORBS = [
+  { pos: new THREE.Vector3(0, 1, -22), color: "#6a4bff", radius: 5.5 },
+  { pos: new THREE.Vector3(8, -3, -26), color: "#00d1ff", radius: 4.5 },
+  { pos: new THREE.Vector3(-6, -5, -24), color: "#ff3bb5", radius: 5 },
+  { pos: new THREE.Vector3(12, 4, -28), color: "#a78bfa", radius: 4 },
+  { pos: new THREE.Vector3(-10, 2, -25), color: "#f472b6", radius: 4.5 },
+  { pos: new THREE.Vector3(4, 6, -29), color: "#ff9a5c", radius: 5 },
+];
+
+export function NebulaOrbs() {
+  const orbs = useMemo(() => NEBULA_ORBS.map(orb => ({
+    ...orb,
+    uColor: new THREE.Uniform(new THREE.Color(orb.color)),
+    uOpacity: new THREE.Uniform(0),
+  })), []);
+
+  useFrame((state) => {
+    const now = state.clock.elapsedTime;
+    orbs.forEach((orb, i) => {
+      const w = dimensionWeight(scrollState.current, i % DIMENSIONS.length);
+      orb.uColor.value.set(orb.color);
+      orb.uOpacity.value = (0.03 + w * 0.05) * (0.8 + Math.sin(now * 0.5 + i * 1.2) * 0.2);
+    });
+  });
+
+  return (
+    <group>
+      {orbs.map((orb, i) => (
+        <mesh key={i} position={orb.pos}>
+          <sphereGeometry args={[orb.radius, 24, 24]} />
+          <shaderMaterial
+            vertexShader={fresnelVertex}
+            fragmentShader={fresnelFragment}
+            uniforms={{ uColor: orb.uColor, uOpacity: orb.uOpacity }}
+            transparent
+            depthWrite={false}
+            side={THREE.FrontSide}
+            blending={THREE.AdditiveBlending}
+          />
+        </mesh>
+      ))}
+    </group>
+  );
+}
+
+// Shooting stars — meteors streaking across the sky
+const STREAK_TEX = (() => {
+  const c = document.createElement("canvas");
+  c.width = 256; c.height = 64;
+  const ctx = c.getContext("2d")!;
+  const g = ctx.createLinearGradient(0, 32, 256, 32);
+  g.addColorStop(0, "rgba(255,255,255,1)");
+  g.addColorStop(0.15, "rgba(255,255,255,0.9)");
+  g.addColorStop(0.5, "rgba(255,255,255,0.3)");
+  g.addColorStop(1, "rgba(255,255,255,0)");
+  ctx.fillStyle = g;
+  ctx.fillRect(0, 0, 256, 64);
+  return new THREE.CanvasTexture(c);
+})();
+
+const METEORS = [
+  { speed: 18, baseY: 2, baseZ: -4 },
+  { speed: 22, baseY: -1, baseZ: -6 },
+  { speed: 15, baseY: 4, baseZ: -3 },
+  { speed: 20, baseY: -3, baseZ: -5 },
+  { speed: 17, baseY: 1, baseZ: -7 },
+];
+
+export function ShootingStars() {
+  const refs = useRef<THREE.Mesh[]>([]);
+  const st = useMemo(() => METEORS.map(() => ({ progress: Math.random(), angle: Math.random() * Math.PI * 2, dist: 18 + Math.random() * 8 })), []);
+
+  useFrame((_, delta) => {
+    METEORS.forEach((m, i) => {
+      const s = st[i];
+      s.progress += delta * m.speed * 0.12;
+      if (s.progress >= 1) { s.progress = 0; s.angle = Math.random() * Math.PI * 2; s.dist = 18 + Math.random() * 8; }
+      const t = Math.sin(s.progress * Math.PI);
+      const x = Math.cos(s.angle) * s.dist;
+      const y = m.baseY + Math.sin(s.progress * Math.PI) * 3;
+      const ref = refs.current[i];
+      if (!ref) return;
+      ref.position.set(x, y, -5 + Math.cos(s.angle) * 2);
+      ref.rotation.z = s.angle + Math.PI / 2;
+      (ref.material as THREE.MeshBasicMaterial).opacity = t * 0.9;
+      ref.scale.set(m.speed * 0.04 * (0.5 + t * 0.5), 1, 1);
+    });
+  });
+
+  return (
+    <group>
+      {METEORS.map((_, i) => (
+        <mesh key={i} ref={el => { refs.current[i] = el as THREE.Mesh; }}>
+          <planeGeometry args={[2, 0.15]} />
+          <meshBasicMaterial map={STREAK_TEX} color="#ffffff" transparent blending={THREE.AdditiveBlending} depthWrite={false} side={THREE.DoubleSide} />
+        </mesh>
+      ))}
+    </group>
+  );
+}
+
+// Fog shifter — slowly lerp scene fog color toward active dimension
+export function FogShifter() {
+  const { scene } = useThree();
+  useFrame(() => {
+    const fog = (scene as { fog?: THREE.FogExp2 }).fog;
+    if (!fog || !fog.color) return;
+    const idx = activeDimensionIndex(scrollState.current);
+    fog.color.lerp(DIMENSIONS[idx].color, 0.015);
+  });
+  return null;
 }
