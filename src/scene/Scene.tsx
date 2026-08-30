@@ -13,6 +13,7 @@ import {
 import { BlendFunction } from "postprocessing";
 import * as THREE from "three";
 import { Portal } from "./Portal";
+import { Centerpiece } from "./Centerpiece";
 import { NeuralCluster } from "./NeuralCluster";
 import { Particles } from "./Particles";
 import { CameraRig } from "./CameraRig";
@@ -88,6 +89,7 @@ export function Scene() {
       </mesh>
 
       <Portal />
+      <Centerpiece />
       <NeuralCluster />
       <Particles />
       <CameraRig />
@@ -106,8 +108,8 @@ export function Scene() {
           radialModulation={false}
           modulationOffset={0}
         />
-        <HueSaturation hue={0} saturation={0.08} />
-        <BrightnessContrast brightness={-0.02} contrast={0.06} />
+        <HueSaturation hue={0} saturation={-0.12} />
+        <BrightnessContrast brightness={-0.03} contrast={0.12} />
         <Vignette eskil={false} offset={0.28} darkness={1.2} />
         <Noise opacity={0.03} blendFunction={BlendFunction.OVERLAY} />
       </EffectComposer>
