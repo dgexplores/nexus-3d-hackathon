@@ -155,24 +155,15 @@ export function Overlay() {
   return (
     <div className="overlay">
       <header className="hero">
-        <span className="eyebrow gsap-in">Seven realities • One wormhole • 60FPS WebGL</span>
-        <h1 className="gsap-in">
-          <i>Jumping</i> through<br />
-          <span className="grad">minds.</span>
-        </h1>
-        <div className="gsap-in" style={{ fontFamily: "var(--font-display)", fontSize: "1.6rem", letterSpacing: "-0.02em", opacity: 0.92, marginTop: "0.2rem" }}>NEXUS</div>
-        <p className="hero-sub gsap-in">
-          A Strange-grade scroll dive — Glass, Paint, Ink, Cube, Mirror, Debris and Fractal. <strong>PeachWeb landing craft</strong> meets multiverse warps.
-        </p>
-        <div className="hero-ctas gsap-in">
-          <a href="#top" className="btn-primary">
-            Start dive <span>→</span>
-          </a>
-          <a href="#top" className="btn-ghost">
-            <span style={{ width: 8, height: 8, borderRadius: 999, background: "#fff", display: "inline-block" }} /> Watch 45s
-          </a>
+        <span className="eyebrow gsap-in">— 7 realities / 1 wormhole —</span>
+        <h1 className="gsap-in">NEXUS</h1>
+        <div className="hero-thread gsap-in" aria-hidden="true">
+          <span className="hero-thread-line" />
+          <span className="hero-thread-dot" />
+          <span className="hero-thread-label">a thread you forgot you were holding</span>
         </div>
-        <p className="scroll-hint gsap-in">Scroll to cross into another universe ↓</p>
+        <p className="hero-sub gsap-in">You don&apos;t jump between universes.<br />You remember you were all of them.</p>
+        <p className="scroll-hint gsap-in">scroll — hold the thread</p>
       </header>
 
       <SprocketProgress />

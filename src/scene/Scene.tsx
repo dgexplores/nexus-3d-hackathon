@@ -16,6 +16,7 @@ import { Portal } from "./Portal";
 import { NeuralCluster } from "./NeuralCluster";
 import { Particles } from "./Particles";
 import { CameraRig } from "./CameraRig";
+import { Thread } from "./Thread";
 import { DIMENSIONS, VOID_COLOR, dimensionWeight } from "./clusters";
 import { scrollState } from "./scrollStore";
 
@@ -86,6 +87,7 @@ export function Scene() {
       </mesh>
 
       <Portal />
+      <Thread />
       <NeuralCluster />
       <Particles />
       <CameraRig />
