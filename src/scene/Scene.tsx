@@ -1,6 +1,6 @@
 import { useRef } from "react";
 import { Canvas, useFrame } from "@react-three/fiber";
-import { MeshReflectorMaterial } from "@react-three/drei";
+import { Environment, MeshReflectorMaterial } from "@react-three/drei";
 import {
   EffectComposer,
   Bloom,
@@ -48,7 +48,6 @@ function DimensionLights() {
           intensity={11}
           distance={9}
           decay={2}
-          castShadow={i < 3}
         />
       ))}
     </>
@@ -64,12 +63,12 @@ export function Scene() {
         toneMapping: THREE.ACESFilmicToneMapping,
         toneMappingExposure: 1.1,
       }}
-      shadows="soft"
       dpr={[1, 2]}
       camera={{ fov: 50, position: [0, 1.2, 8.2] }}
     >
       <color attach="background" args={[VOID_COLOR.getHex()]} />
       <fogExp2 attach="fog" args={[VOID_COLOR.getHex(), 0.04]} />
+      <Environment files="/hdri/dikhololo_night_1k.hdr" environmentIntensity={0.5} />
 
       <ambientLight color="#0a0e1a" intensity={0.3} />
       <hemisphereLight color="#0a0e1a" groundColor="#0c0610" intensity={0.4} />
@@ -83,10 +82,10 @@ export function Scene() {
       <DimensionLights />
       <directionalLight color="#ffffff" intensity={0.5} position={[5, 8, 5]} />
 
-      <mesh position={[0, -3, 0]} rotation={[-Math.PI / 2, 0, 0]} receiveShadow>
+      <mesh position={[0, -3, 0]} rotation={[-Math.PI / 2, 0, 0]}>
         <circleGeometry args={[40, 64]} />
         <MeshReflectorMaterial
-          resolution={512}
+          resolution={256}
           blur={[280, 100]}
           mixBlur={1}
           mixStrength={30}
