@@ -1,5 +1,6 @@
 import { useRef } from "react";
 import { Canvas, useFrame } from "@react-three/fiber";
+import { Environment } from "@react-three/drei";
 import {
   EffectComposer,
   Bloom,
@@ -13,7 +14,6 @@ import {
 import { BlendFunction } from "postprocessing";
 import * as THREE from "three";
 import { Portal } from "./Portal";
-import { Centerpiece } from "./Centerpiece";
 import { NeuralCluster } from "./NeuralCluster";
 import { Particles } from "./Particles";
 import { CameraRig } from "./CameraRig";
@@ -70,6 +70,7 @@ export function Scene() {
     >
       <color attach="background" args={[VOID_COLOR.getHex()]} />
       <fogExp2 attach="fog" args={[VOID_COLOR.getHex(), 0.04]} />
+      <Environment preset="night" environmentIntensity={0.6} />
 
       <ambientLight color="#0a0e1a" intensity={0.3} />
       <hemisphereLight color="#0a0e1a" groundColor="#0c0610" intensity={0.4} />
@@ -89,7 +90,6 @@ export function Scene() {
       </mesh>
 
       <Portal />
-      <Centerpiece />
       <NeuralCluster />
       <Particles />
       <CameraRig />

@@ -99,6 +99,7 @@ function ChapterSection({ chapter, index }: { chapter: Chapter; index: number })
       ref={ref}
       className={`chapter chapter-${chapter.align}`}
       data-index={index}
+      data-dim={chapter.dim.key}
       style={{ "--dim-color": hex } as React.CSSProperties}
     >
       <div className="chapter-inner">

@@ -92,12 +92,21 @@ body {
   font-family: var(--font-display);
   font-weight: 700;
   font-size: clamp(3.5rem, 12vw, 8rem);
-  letter-spacing: 0.06em;
+  letter-spacing: 0.02em;
   margin: 0;
-  background: linear-gradient(120deg, #ffffff 0%, #b9c6ff 45%, #ffb9ec 100%);
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
+  color: var(--fg);
+  text-shadow: 0 0 60px rgba(159, 180, 255, 0.35);
+  animation: title-breathe 6s ease-in-out infinite;
+}
+
+@keyframes title-breathe {
+  0%,
+  100% {
+    text-shadow: 0 0 60px rgba(159, 180, 255, 0.35);
+  }
+  50% {
+    text-shadow: 0 0 90px rgba(159, 180, 255, 0.55);
+  }
 }
 
 .scroll-hint {
@@ -172,6 +181,58 @@ body {
 
 .chapter h2 .line {
   display: block;
+}
+
+/* each dimension gets its own typographic character, not one template
+   repeated seven times, so the form itself carries the dimension's idea */
+.chapter[data-dim="glass"] h2 {
+  font-weight: 400;
+  letter-spacing: 0.01em;
+  font-size: clamp(1.9rem, 4.4vw, 3rem);
+}
+
+.chapter[data-dim="paint"] h2 {
+  font-family: Georgia, "Times New Roman", serif;
+  font-style: italic;
+  font-weight: 400;
+  letter-spacing: 0;
+}
+
+.chapter[data-dim="ink"] h2 {
+  font-family: ui-monospace, "SF Mono", Menlo, "Cascadia Code", monospace;
+  font-weight: 400;
+  letter-spacing: -0.01em;
+  font-size: clamp(1.7rem, 3.8vw, 2.7rem);
+}
+
+.chapter[data-dim="cube"] h2 {
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  font-size: clamp(1.7rem, 4vw, 2.8rem);
+}
+
+.chapter[data-dim="mirror"] h2 {
+  font-family: Georgia, "Times New Roman", serif;
+  font-style: italic;
+  font-weight: 400;
+  letter-spacing: 0.01em;
+}
+
+.chapter[data-dim="debris"] h2 .line:nth-child(1) {
+  display: inline-block;
+  transform: rotate(-1.2deg) translateX(-2px);
+}
+.chapter[data-dim="debris"] h2 .line:nth-child(2) {
+  display: inline-block;
+  transform: rotate(0.8deg) translateX(4px);
+}
+
+.chapter[data-dim="fractal"] h2 {
+  font-family: Georgia, "Times New Roman", serif;
+  font-weight: 400;
+  letter-spacing: 0.02em;
+  font-size: clamp(2rem, 4.6vw, 3.6rem);
 }
 
 .chapter p {
