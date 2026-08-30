@@ -17,6 +17,7 @@ import { NeuralCluster } from "./NeuralCluster";
 import { Particles } from "./Particles";
 import { CameraRig } from "./CameraRig";
 import { Thread } from "./Thread";
+import { Galaxies, Nebulae } from "./Galaxies";
 import { DIMENSIONS, VOID_COLOR, dimensionWeight } from "./clusters";
 import { scrollState } from "./scrollStore";
 
@@ -86,6 +87,9 @@ export function Scene() {
         <meshStandardMaterial color="#06070d" roughness={0.95} metalness={0} />
       </mesh>
 
+      {/* celestial layer behind — galaxies + nebulae, multi-orbit cinematic */}
+      <Nebulae />
+      <Galaxies />
       <Portal />
       <Thread />
       <NeuralCluster />
