@@ -43,8 +43,8 @@ export const portalFragment = /* glsl */ `
     vec3 rainbow = mix(uColor, uColorB, 0.5 + 0.5 * sin(huePhase * 6.28318));
     vec3 banded = mix(uColor, uColorB, bands2);
 
-    // bright in a mid ring, dim at the very center and past the outer edge
-    float rim = smoothstep(0.0, 0.32, r) * smoothstep(1.0, 0.5, r);
+    // bright all the way to the center, no dark core, only fades at the outer edge
+    float rim = smoothstep(1.0, 0.3, r);
     vec3 color = mix(rainbow, banded, bands) * rim * uEmissiveIntensity;
 
     float spark = pow(bands * bands2, 6.0);
