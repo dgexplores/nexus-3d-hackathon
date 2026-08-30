@@ -19,6 +19,7 @@ import { CameraRig } from "./CameraRig";
 import { Thread } from "./Thread";
 import { Galaxies, Nebulae } from "./Galaxies";
 import { Planets } from "./Planets";
+import { AsteroidBelt, StarDome, LensDust } from "./SpaceExtension";
 import { DIMENSIONS, dimensionWeight } from "./clusters";
 import { scrollState } from "./scrollStore";
 
@@ -91,10 +92,13 @@ export function Scene() {
         <meshStandardMaterial color="#06070d" roughness={0.95} metalness={0} />
       </mesh>
 
-      {/* 8K space density: nebulae + galaxies + planets + portal stack */}
+      {/* 8K extended space — free assets: star dome + nebulae + galaxies + planets + asteroids + dust */}
+      <StarDome />
       <Nebulae />
       <Galaxies />
       <Planets />
+      <AsteroidBelt />
+      <LensDust />
       <Portal />
       <Thread />
       <NeuralCluster />
