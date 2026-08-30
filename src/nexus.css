@@ -398,6 +398,11 @@ body::after {
   letter-spacing: -0.032em;
   margin: 0.7rem 0 0.9rem;
   color: #f8fafc;
+  text-shadow: 0 0 24px color-mix(in srgb, var(--dim-color, #fff) 18%, transparent);
+}
+.chapter p strong {
+  color: #e2e8f0;
+  font-weight: 500;
 }
 .chapter h2 .line { display: block; }
 .chapter[data-dim="glass"] h2 { font-weight: 400; letter-spacing: 0.01em; font-size: clamp(1.85rem, 4.4vw, 2.95rem); }
