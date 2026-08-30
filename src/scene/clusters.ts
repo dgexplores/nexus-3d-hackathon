@@ -130,7 +130,7 @@ export const VOID_COLOR = new THREE.Color("#04050c");
 // about a third of the way to its neighbors. Drives opacity, light intensity,
 // and environment color so each dimension reads as its own scene instead of
 // a shared cloud that never resolves into anything specific.
-const FOCUS_FALLOFF = 0.09;
+const FOCUS_FALLOFF = 0.065;
 
 export function dimensionWeight(scroll: number, index: number): number {
   const dist = Math.abs(scroll - DIMENSIONS[index].scrollPeak);

@@ -46,6 +46,16 @@ body {
   display: block;
 }
 
+.portal-transition {
+  position: fixed;
+  inset: 0;
+  z-index: 15;
+  pointer-events: none;
+  background: var(--bg);
+  opacity: 0;
+  will-change: clip-path, opacity;
+}
+
 .overlay {
   position: relative;
   z-index: 1;

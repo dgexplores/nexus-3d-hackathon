@@ -161,7 +161,7 @@ function GlassCluster({ index, nodes }: ClusterProps) {
     const t = state.clock.getElapsedTime();
     const w = weight.current;
     const scale = THREE.MathUtils.lerp(0.6, 1, w);
-    if (materialRef.current) materialRef.current.opacity = THREE.MathUtils.lerp(0.15, 1, w);
+    if (materialRef.current) materialRef.current.opacity = THREE.MathUtils.lerp(0.02, 1, w);
     if (!meshRef.current) return;
     nodes.forEach((node, i) => {
       dummy.position.copy(node.basePos);
@@ -199,7 +199,7 @@ function PaintCluster({ index, nodes }: ClusterProps) {
     const t = state.clock.getElapsedTime();
     const w = weight.current;
     const scaleMul = THREE.MathUtils.lerp(0.6, 1, w);
-    if (materialRef.current) materialRef.current.opacity = THREE.MathUtils.lerp(0.15, 1, w);
+    if (materialRef.current) materialRef.current.opacity = THREE.MathUtils.lerp(0.02, 1, w);
     if (!meshRef.current) return;
     nodes.forEach((node, i) => {
       dummy.position.copy(node.basePos);
@@ -239,7 +239,7 @@ function InkCluster({ index, nodes }: ClusterProps) {
     const t = state.clock.getElapsedTime();
     const w = weight.current;
     const scale = THREE.MathUtils.lerp(0.6, 1, w);
-    if (materialRef.current) materialRef.current.opacity = THREE.MathUtils.lerp(0.15, 1, w);
+    if (materialRef.current) materialRef.current.opacity = THREE.MathUtils.lerp(0.02, 1, w);
     if (!meshRef.current) return;
     nodes.forEach((node, i) => {
       dummy.position.copy(node.basePos);
@@ -271,7 +271,7 @@ function CubeCluster({ index, nodes }: ClusterProps) {
     const t = state.clock.getElapsedTime();
     const w = weight.current;
     const scaleMul = THREE.MathUtils.lerp(0.6, 1, w);
-    if (materialRef.current) materialRef.current.opacity = THREE.MathUtils.lerp(0.15, 1, w);
+    if (materialRef.current) materialRef.current.opacity = THREE.MathUtils.lerp(0.02, 1, w);
     if (!meshRef.current) return;
     nodes.forEach((node, i) => {
       dummy.position.copy(node.basePos);
@@ -304,7 +304,7 @@ function MirrorCluster({ index, nodes }: ClusterProps) {
     const t = state.clock.getElapsedTime();
     const w = weight.current;
     const scale = THREE.MathUtils.lerp(0.6, 1, w);
-    if (materialRef.current) materialRef.current.opacity = THREE.MathUtils.lerp(0.15, 1, w);
+    if (materialRef.current) materialRef.current.opacity = THREE.MathUtils.lerp(0.02, 1, w);
     if (!meshRef.current) return;
     nodes.forEach((node, i) => {
       dummy.position.copy(node.basePos);
@@ -348,7 +348,7 @@ function DebrisCluster({ index, nodes: baseNodes }: ClusterProps) {
     const t = state.clock.getElapsedTime();
     const w = weight.current;
     const scale = THREE.MathUtils.lerp(0.6, 1, w);
-    if (materialRef.current) materialRef.current.opacity = THREE.MathUtils.lerp(0.15, 1, w);
+    if (materialRef.current) materialRef.current.opacity = THREE.MathUtils.lerp(0.02, 1, w);
     if (!meshRef.current) return;
     nodes.forEach((node, i) => {
       const dummy = dummies[i];
@@ -391,7 +391,7 @@ function FractalCluster({ index, nodes }: ClusterProps) {
     const t = state.clock.getElapsedTime();
     const w = weight.current;
     const scale = THREE.MathUtils.lerp(0.6, 1, w);
-    if (materialRef.current) materialRef.current.opacity = THREE.MathUtils.lerp(0.15, 1, w);
+    if (materialRef.current) materialRef.current.opacity = THREE.MathUtils.lerp(0.02, 1, w);
     haloMatRefs.forEach((ref, ringIdx) => {
       if (ref.current) ref.current.opacity = THREE.MathUtils.lerp(0.05, 0.35 - ringIdx * 0.1, w);
     });

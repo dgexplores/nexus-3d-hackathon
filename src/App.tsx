@@ -3,6 +3,7 @@ import gsap from "gsap";
 import { Scene } from "./scene/Scene";
 import { Overlay } from "./Overlay";
 import { Cursor } from "./Cursor";
+import { Transition } from "./Transition";
 import { initScrollTracking } from "./scene/scrollStore";
 import "./nexus.css";
 
@@ -61,6 +62,7 @@ function App() {
       </div>
 
       <Cursor />
+      <Transition />
     </div>
   );
 }
