@@ -1,32 +1,28 @@
-# React + TypeScript + Vite
+# NEXUS
 
-This template provides a minimal setup to get React working in Vite with HMR and some Oxlint rules.
+A scroll-driven 3D experience built for a "3D Websites" hackathon: a swirling wormhole sits at the center of the scene, tethered to four separate clusters of glowing neural nodes, each its own "universe." Scrolling carries the camera from one cluster to the next while the wormhole stays in view as the thing connecting them all.
 
-Currently, two official plugins are available:
+## Concept
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+Four parallel minds, one shared connection. Each cluster of nodes is wired internally by pulsing synapse-lines and tethered back to a central, ever-shifting wormhole. The scroll narrative (Ignition → Divergence → Convergence → Singularity) frames it as a journey between universes that were never really separate.
 
-## React Compiler
+## Stack
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+- React + TypeScript + Vite
+- [react-three-fiber](https://github.com/pmndrs/react-three-fiber) / [drei](https://github.com/pmndrs/drei) / [@react-three/postprocessing](https://github.com/pmndrs/react-postprocessing)
+- Hand-written GLSL shaders (wormhole event-horizon swirl, traveling synapse pulses, simplex-noise core)
+- GSAP for the intro title stagger
+- Bloom, chromatic aberration, vignette, and film grain post-processing
 
-## Expanding the Oxlint configuration
+## Running locally
 
-If you are developing a production application, we recommend enabling type-aware lint rules by installing `oxlint-tsgolint` and editing `.oxlintrc.json`:
-
-```json
-{
-  "$schema": "./node_modules/oxlint/configuration_schema.json",
-  "plugins": ["react", "typescript", "oxc"],
-  "options": {
-    "typeAware": true
-  },
-  "rules": {
-    "react/rules-of-hooks": "error",
-    "react/only-export-components": ["warn", { "allowConstantExport": true }]
-  }
-}
+```bash
+npm install
+npm run dev
 ```
 
-See the [Oxlint rules documentation](https://oxc.rs/docs/guide/usage/linter/rules) for the full list of rules and categories.
+## Building
+
+```bash
+npm run build
+```

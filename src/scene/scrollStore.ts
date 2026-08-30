@@ -1,8 +1,6 @@
 // Mutable, module-level scroll/pointer state shared between the DOM (App)
 // and R3F's render loop (CameraRig, Core, Particles) without triggering
 // React re-renders on every scroll/pointer event.
-export const CHAPTER_COUNT = 4;
-
 export const scrollState = {
   target: 0, // 0..1 raw scroll progress
   current: 0, // eased/lerped value read inside useFrame

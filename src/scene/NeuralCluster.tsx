@@ -1,4 +1,4 @@
-import { useMemo, useRef } from "react";
+import { useEffect, useMemo, useRef } from "react";
 import { useFrame } from "@react-three/fiber";
 import * as THREE from "three";
 import { synapseFragment, synapseVertex } from "../shaders/synapse";
@@ -75,7 +75,7 @@ export function NeuralCluster() {
 
   const synapseUniforms = useMemo(() => ({ uTime: { value: 0 } }), []);
 
-  useMemo(() => {
+  useEffect(() => {
     if (!meshRef.current) return;
     nodes.forEach((node, i) => {
       meshRef.current!.setColorAt(i, CLUSTER_COLORS[node.cluster]);

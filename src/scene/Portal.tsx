@@ -2,13 +2,7 @@ import { useMemo, useRef } from "react";
 import { useFrame } from "@react-three/fiber";
 import * as THREE from "three";
 import { portalFragment, portalVertex } from "../shaders/portal";
-
-const CYCLE_COLORS = [
-  new THREE.Color("#5b8cff"),
-  new THREE.Color("#7c5bff"),
-  new THREE.Color("#ff5bd0"),
-  new THREE.Color("#ffb35b"),
-];
+import { CLUSTER_COLORS } from "./clusters";
 
 export function Portal() {
   const materialRef = useRef<THREE.ShaderMaterial>(null);
@@ -17,7 +11,7 @@ export function Portal() {
   const uniforms = useMemo(
     () => ({
       uTime: { value: 0 },
-      uColor: { value: new THREE.Color(CYCLE_COLORS[0]) },
+      uColor: { value: new THREE.Color(CLUSTER_COLORS[0]) },
     }),
     [],
   );
@@ -26,12 +20,12 @@ export function Portal() {
     const t = state.clock.getElapsedTime();
     if (materialRef.current) {
       materialRef.current.uniforms.uTime.value = t;
-      const cycle = (t * 0.05) % CYCLE_COLORS.length;
+      const cycle = (t * 0.05) % CLUSTER_COLORS.length;
       const i = Math.floor(cycle);
-      const next = (i + 1) % CYCLE_COLORS.length;
+      const next = (i + 1) % CLUSTER_COLORS.length;
       (materialRef.current.uniforms.uColor.value as THREE.Color).lerpColors(
-        CYCLE_COLORS[i],
-        CYCLE_COLORS[next],
+        CLUSTER_COLORS[i],
+        CLUSTER_COLORS[next],
         cycle - i,
       );
     }
