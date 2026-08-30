@@ -1,6 +1,5 @@
 import { useRef } from "react";
 import { Canvas, useFrame } from "@react-three/fiber";
-import { Environment } from "@react-three/drei";
 import {
   EffectComposer,
   Bloom,
@@ -70,7 +69,6 @@ export function Scene() {
     >
       <color attach="background" args={[VOID_COLOR.getHex()]} />
       <fogExp2 attach="fog" args={[VOID_COLOR.getHex(), 0.04]} />
-      <Environment preset="night" environmentIntensity={0.6} />
 
       <ambientLight color="#0a0e1a" intensity={0.3} />
       <hemisphereLight color="#0a0e1a" groundColor="#0c0610" intensity={0.4} />
