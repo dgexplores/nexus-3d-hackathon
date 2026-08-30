@@ -18,7 +18,7 @@ import { Particles } from "./Particles";
 import { CameraRig } from "./CameraRig";
 import { Thread } from "./Thread";
 import { Galaxies, Nebulae } from "./Galaxies";
-import { DIMENSIONS, VOID_COLOR, dimensionWeight } from "./clusters";
+import { DIMENSIONS, dimensionWeight } from "./clusters";
 import { scrollState } from "./scrollStore";
 
 const WORMHOLE_LIGHT_COLOR = new THREE.Color("#9b7cff").lerp(new THREE.Color("#ff6b9d"), 0.5);
@@ -67,10 +67,13 @@ export function Scene() {
       dpr={[1, 2]}
       camera={{ fov: 50, position: [0, 1.2, 8.2] }}
     >
-      <color attach="background" args={[VOID_COLOR.getHex()]} />
-      <fogExp2 attach="fog" args={[VOID_COLOR.getHex(), 0.04]} />
+      <color attach="background" args={["#010103"]} />
+      <fogExp2 attach="fog" args={["#010103", 0.04]} />
 
-      <ambientLight color="#0a0e1a" intensity={0.3} />
+      <ambientLight color="#ffffff" intensity={0.3} />
+      {/* inspiration multiverse rig: crimson + electric blue */}
+      <pointLight color="#ff0033" intensity={4} distance={15} position={[-4, 2, 2]} />
+      <pointLight color="#00d2ff" intensity={4} distance={15} position={[4, -2, 2]} />
       <hemisphereLight color="#0a0e1a" groundColor="#0c0610" intensity={0.4} />
       <pointLight
         position={[0, 0, 0]}

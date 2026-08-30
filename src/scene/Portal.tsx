@@ -64,6 +64,15 @@ export function Portal() {
           side={THREE.DoubleSide}
         />
       </mesh>
+      {/* multiverse nested rings — inspiration second HTML: outer electric blue + inner crimson */}
+      <mesh rotation={[Math.PI / 2, 0, 0]}>
+        <torusGeometry args={[2.6, 0.08, 30, 200]} />
+        <meshStandardMaterial color="#00d2ff" emissive="#0066ff" emissiveIntensity={1.5} roughness={0.1} metalness={0.9} />
+      </mesh>
+      <mesh rotation={[Math.PI / 2, 0, 0]}>
+        <torusGeometry args={[1.9, 0.06, 30, 200]} />
+        <meshStandardMaterial color="#ff0033" emissive="#ff0022" emissiveIntensity={2.0} roughness={0.1} metalness={0.9} />
+      </mesh>
     </group>
   );
 }

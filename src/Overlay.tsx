@@ -155,15 +155,15 @@ export function Overlay() {
   return (
     <div className="overlay">
       <header className="hero">
-        <span className="eyebrow gsap-in">— 7 realities / 1 wormhole —</span>
-        <h1 className="gsap-in">NEXUS</h1>
+        <span className="hero-eyebrow gsap-in">Dimensional Gateway // Alpha-9</span>
+        <h1 className="hero-title gsap-in">THE MULTIVERSE</h1>
         <div className="hero-thread gsap-in" aria-hidden="true">
           <span className="hero-thread-line" />
           <span className="hero-thread-dot" />
-          <span className="hero-thread-label">a thread you forgot you were holding</span>
+          <span className="hero-thread-label">NEXUS — a thread you forgot you were holding</span>
         </div>
-        <p className="hero-sub gsap-in">You don&apos;t jump between universes.<br />You remember you were all of them.</p>
-        <p className="scroll-hint gsap-in">scroll — hold the thread</p>
+        <p className="hero-sub gsap-in">Scroll to breach the timeline barrier and traverse seven alternative realities.</p>
+        <p className="scroll-hint gsap-in">↓ TEAR OPEN REALITY</p>
       </header>
 
       <SprocketProgress />
