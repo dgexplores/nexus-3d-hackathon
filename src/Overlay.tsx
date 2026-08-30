@@ -155,8 +155,23 @@ export function Overlay() {
   return (
     <div className="overlay">
       <header className="hero">
-        <span className="eyebrow gsap-in">Seven realities, one wormhole</span>
-        <h1 className="gsap-in">NEXUS</h1>
+        <span className="eyebrow gsap-in">Seven realities • One wormhole • 60FPS WebGL</span>
+        <h1 className="gsap-in">
+          <i>Jumping</i> through<br />
+          <span className="grad">minds.</span>
+        </h1>
+        <div className="gsap-in" style={{ fontFamily: "var(--font-display)", fontSize: "1.6rem", letterSpacing: "-0.02em", opacity: 0.92, marginTop: "0.2rem" }}>NEXUS</div>
+        <p className="hero-sub gsap-in">
+          A Strange-grade scroll dive — Glass, Paint, Ink, Cube, Mirror, Debris and Fractal. <strong>PeachWeb landing craft</strong> meets multiverse warps.
+        </p>
+        <div className="hero-ctas gsap-in">
+          <a href="#top" className="btn-primary">
+            Start dive <span>→</span>
+          </a>
+          <a href="#top" className="btn-ghost">
+            <span style={{ width: 8, height: 8, borderRadius: 999, background: "#fff", display: "inline-block" }} /> Watch 45s
+          </a>
+        </div>
         <p className="scroll-hint gsap-in">Scroll to cross into another universe ↓</p>
       </header>
 
