@@ -4,6 +4,7 @@ import Lenis from "lenis";
 import { Scene } from "./scene/Scene";
 import { Overlay } from "./Overlay";
 import { Cursor } from "./Cursor";
+import { ErrorBoundary } from "./ErrorBoundary";
 import { initScrollTracking } from "./scene/scrollStore";
 import "./nexus.css";
 
@@ -13,10 +14,14 @@ function App() {
   const introRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    const lenis = new Lenis({ duration: 1.15, easing: (t: number) => Math.min(1, 1.001 - Math.pow(2, -10 * t)) });
+    const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    let lenis: Lenis | null = null;
     let raf = 0;
-    const tick = (time: number) => { lenis.raf(time); raf = requestAnimationFrame(tick); };
-    raf = requestAnimationFrame(tick);
+    if (!reduceMotion) {
+      lenis = new Lenis({ duration: 1.15, easing: (t: number) => Math.min(1, 1.001 - Math.pow(2, -10 * t)) });
+      const tick = (time: number) => { lenis!.raf(time); raf = requestAnimationFrame(tick); };
+      raf = requestAnimationFrame(tick);
+    }
     const stopScroll = initScrollTracking();
     const start = performance.now();
     const duration = 400;
@@ -30,7 +35,7 @@ function App() {
     const timer = setTimeout(() => setReady(true), duration);
     return () => {
       cancelAnimationFrame(raf);
-      lenis.destroy();
+      lenis?.destroy();
       stopScroll();
       clearTimeout(timer);
       cancelAnimationFrame(frame);
@@ -47,26 +52,28 @@ function App() {
   }, [ready]);
 
   return (
-    <div id="top">
-      <div className={`loader ${ready ? "loader-hidden" : ""}`}>
-        <div className="loader-inner">
-          <span>NEXUS</span>
-          <span className="loader-percent">LOADING {percent.toString().padStart(2, "0")}%</span>
+    <ErrorBoundary>
+      <div id="top">
+        <div className={`loader ${ready ? "loader-hidden" : ""}`}>
+          <div className="loader-inner">
+            <span>NEXUS</span>
+            <span className="loader-percent">LOADING {percent.toString().padStart(2, "0")}%</span>
+          </div>
         </div>
-      </div>
 
-      <div className="canvas-fixed">
-        <Suspense fallback={null}>
-          <Scene />
-        </Suspense>
-      </div>
+        <div className="canvas-fixed">
+          <Suspense fallback={null}>
+            <Scene />
+          </Suspense>
+        </div>
 
-      <div ref={introRef}>
-        <Overlay />
-      </div>
+        <div ref={introRef}>
+          <Overlay />
+        </div>
 
-      <Cursor />
-    </div>
+        <Cursor />
+      </div>
+    </ErrorBoundary>
   );
 }
 

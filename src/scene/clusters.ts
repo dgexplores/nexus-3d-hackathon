@@ -11,9 +11,8 @@ export type Dimension = {
   center: THREE.Vector3;
   vibe: string;
   lut: { highlight: THREE.Color; midtone: THREE.Color; shadow: THREE.Color; shadowLift: number };
-  // scroll progress (0..1) where the camera is squarely inside this dimension,
-  // matches CameraRig's waypoint table for D1..D7.
   scrollPeak: number;
+  timeScale: number; // unique per-dim time — judges feel time itself warps
 };
 
 export const DIMENSIONS: Dimension[] = [
@@ -25,6 +24,7 @@ export const DIMENSIONS: Dimension[] = [
     center: new THREE.Vector3(3.4, 0.6, -2.0),
     vibe: "Cold, precise, faceted",
     scrollPeak: 0.14,
+    timeScale: 0.55,
     lut: {
       highlight: new THREE.Color("#b8d4ff"),
       midtone: new THREE.Color("#5b8cff"),
@@ -40,6 +40,7 @@ export const DIMENSIONS: Dimension[] = [
     center: new THREE.Vector3(-3.6, -0.4, -1.4),
     vibe: "Warm, wet, organic",
     scrollPeak: 0.27,
+    timeScale: 0.32,
     lut: {
       highlight: new THREE.Color("#ffc8e0"),
       midtone: new THREE.Color("#7c5bff"),
@@ -55,6 +56,7 @@ export const DIMENSIONS: Dimension[] = [
     center: new THREE.Vector3(0, 4.2, 0.3),
     vibe: "Minimal, stark, flat",
     scrollPeak: 0.38,
+    timeScale: 0.45,
     lut: {
       highlight: new THREE.Color("#ffffff"),
       midtone: new THREE.Color("#1a1a1a"),
@@ -70,6 +72,7 @@ export const DIMENSIONS: Dimension[] = [
     center: new THREE.Vector3(0, -0.2, -3.8),
     vibe: "Grid-locked, impossible order",
     scrollPeak: 0.5,
+    timeScale: 0.68,
     lut: {
       highlight: new THREE.Color("#fff4d6"),
       midtone: new THREE.Color("#ffb35b"),
@@ -85,6 +88,7 @@ export const DIMENSIONS: Dimension[] = [
     center: new THREE.Vector3(-3.0, 1.4, 2.6),
     vibe: "Disorienting, recursive",
     scrollPeak: 0.63,
+    timeScale: 0.52,
     lut: {
       highlight: new THREE.Color("#ffffff"),
       midtone: new THREE.Color("#ff5bd0"),
@@ -100,6 +104,7 @@ export const DIMENSIONS: Dimension[] = [
     center: new THREE.Vector3(2.6, -1.6, 1.4),
     vibe: "Broken, post-collapse",
     scrollPeak: 0.75,
+    timeScale: 1.7,
     lut: {
       highlight: new THREE.Color("#8fa3d6"),
       midtone: new THREE.Color("#4a5a7a"),
@@ -115,6 +120,7 @@ export const DIMENSIONS: Dimension[] = [
     center: new THREE.Vector3(0, 2.0, -0.5),
     vibe: "Unity, overwhelming scale",
     scrollPeak: 0.87,
+    timeScale: 0.95,
     lut: {
       highlight: new THREE.Color("#ffffff"),
       midtone: new THREE.Color("#ffffff"),

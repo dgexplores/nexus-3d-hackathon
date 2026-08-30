@@ -1,8 +1,8 @@
 import { useMemo, useRef } from "react"
 import { useFrame } from "@react-three/fiber"
 import * as THREE from "three"
-import { DIMENSIONS } from "./clusters"
-import { scrollState } from "./scrollStore"
+import { DIMENSIONS, dimensionWeight } from "./clusters"
+import { jumpTo, scrollState } from "./scrollStore"
 
 // tiny line with human meaning: the thread that holds you
 // senior-grade: TubeGeometry + custom shader pulse, not a basic Line
@@ -77,10 +77,21 @@ export function Thread() {
 
   useFrame((state) => {
     if (!matRef.current) return
-    matRef.current.uniforms.uTime.value = state.clock.elapsedTime
-    // brighten slightly when actively scrolling (human feel)
-    const vel = Math.abs(scrollState.target - scrollState.current)
-    matRef.current.uniforms.uPulse.value = 1 + vel * 6
+    // per-dim time dilation — paint slow, debris fast — unique vs field
+    let scale = 1
+    let wSum = 0
+    DIMENSIONS.forEach((d, i) => {
+      const w = dimensionWeight(scrollState.current, i)
+      scale += w * (d.timeScale - 1)
+      wSum += w
+    })
+    if (wSum < 0.08) scale = 1
+    matRef.current.uniforms.uTime.value = state.clock.elapsedTime * scale
+    const vel = Math.abs(scrollState.velocity)
+    matRef.current.uniforms.uPulse.value = 1 + vel * 18
+    // velocity warp: brighten on fast scroll
+    const vWarp = Math.min(0.6, vel * 6)
+    matRef.current.uniforms.uColor.value = new THREE.Color("#f4f2ff").lerp(new THREE.Color("#38bdf8"), vWarp)
   })
 
   const uniforms = useMemo(() => ({
@@ -89,8 +100,18 @@ export function Thread() {
     uColor: { value: color },
   }), [color])
 
+  const handlePointerDown = () => {
+    // unique: click thread to tear to next reality — no competitor has this
+    let best = 0
+    let bestDist = Infinity
+    DIMENSIONS.forEach((d, i) => {
+      const dist = d.scrollPeak - scrollState.current
+      if (dist > 0.02 && dist < bestDist) { bestDist = dist; best = i }
+    })
+    jumpTo(DIMENSIONS[best].scrollPeak)
+  }
   return (
-    <mesh geometry={geom}>
+    <mesh geometry={geom} onPointerDown={handlePointerDown} onPointerOver={() => document.body.style.cursor = "pointer"} onPointerOut={() => document.body.style.cursor = "none"}>
       <shaderMaterial
         ref={matRef}
         vertexShader={threadVertex}

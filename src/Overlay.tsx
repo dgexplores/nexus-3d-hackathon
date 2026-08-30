@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { DIMENSIONS, type Dimension } from "./scene/clusters";
+import { jumpTo } from "./scene/scrollStore";
 
 type Chapter = {
   eyebrow: string;
@@ -139,11 +140,13 @@ function SprocketProgress() {
       {DIMENSIONS.map((dim, i) => {
         const hex = `#${dim.color.getHexString()}`;
         return (
-          <span
+          <button
             key={dim.id}
+            onClick={() => jumpTo(dim.scrollPeak)}
             className={`sprocket-hole ${i === active ? "sprocket-active" : ""}`}
             style={{ "--dim-color": hex } as React.CSSProperties}
-            title={dim.name}
+            title={`${dim.name} — click to jump`}
+            aria-label={`Jump to ${dim.name}`}
           />
         );
       })}

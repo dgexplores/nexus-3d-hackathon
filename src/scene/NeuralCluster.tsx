@@ -158,7 +158,7 @@ function GlassCluster({ index, nodes }: ClusterProps) {
   useColorSetup(nodes, dim.color, meshRef);
 
   useFrame((state) => {
-    const t = state.clock.getElapsedTime();
+    const t = state.clock.getElapsedTime() * dim.timeScale;
     const w = weight.current;
     const scale = THREE.MathUtils.lerp(0.6, 1, w);
     if (materialRef.current) materialRef.current.opacity = THREE.MathUtils.lerp(0.02, 1, w);
@@ -196,7 +196,7 @@ function PaintCluster({ index, nodes }: ClusterProps) {
   useColorSetup(nodes, dim.color, meshRef);
 
   useFrame((state) => {
-    const t = state.clock.getElapsedTime();
+    const t = state.clock.getElapsedTime() * dim.timeScale;
     const w = weight.current;
     const scaleMul = THREE.MathUtils.lerp(0.6, 1, w);
     if (materialRef.current) materialRef.current.opacity = THREE.MathUtils.lerp(0.02, 1, w);
@@ -236,7 +236,7 @@ function InkCluster({ index, nodes }: ClusterProps) {
   useColorSetup(nodes, dim.color, meshRef);
 
   useFrame((state) => {
-    const t = state.clock.getElapsedTime();
+    const t = state.clock.getElapsedTime() * dim.timeScale;
     const w = weight.current;
     const scale = THREE.MathUtils.lerp(0.6, 1, w);
     if (materialRef.current) materialRef.current.opacity = THREE.MathUtils.lerp(0.02, 1, w);
@@ -268,7 +268,7 @@ function CubeCluster({ index, nodes }: ClusterProps) {
   useColorSetup(nodes, dim.color, meshRef);
 
   useFrame((state) => {
-    const t = state.clock.getElapsedTime();
+    const t = state.clock.getElapsedTime() * dim.timeScale;
     const w = weight.current;
     const scaleMul = THREE.MathUtils.lerp(0.6, 1, w);
     if (materialRef.current) materialRef.current.opacity = THREE.MathUtils.lerp(0.02, 1, w);
@@ -301,7 +301,7 @@ function MirrorCluster({ index, nodes }: ClusterProps) {
   useColorSetup(nodes, dim.color, meshRef);
 
   useFrame((state) => {
-    const t = state.clock.getElapsedTime();
+    const t = state.clock.getElapsedTime() * dim.timeScale;
     const w = weight.current;
     const scale = THREE.MathUtils.lerp(0.6, 1, w);
     if (materialRef.current) materialRef.current.opacity = THREE.MathUtils.lerp(0.02, 1, w);
@@ -345,7 +345,7 @@ function DebrisCluster({ index, nodes: baseNodes }: ClusterProps) {
   useColorSetup(nodes, dim.color, meshRef);
 
   useFrame((state, delta) => {
-    const t = state.clock.getElapsedTime();
+    const t = state.clock.getElapsedTime() * dim.timeScale;
     const w = weight.current;
     const scale = THREE.MathUtils.lerp(0.6, 1, w);
     if (materialRef.current) materialRef.current.opacity = THREE.MathUtils.lerp(0.02, 1, w);
@@ -388,7 +388,7 @@ function FractalCluster({ index, nodes }: ClusterProps) {
   useColorSetup(nodes, dim.color, meshRef, haloRefs[2]);
 
   useFrame((state) => {
-    const t = state.clock.getElapsedTime();
+    const t = state.clock.getElapsedTime() * dim.timeScale;
     const w = weight.current;
     const scale = THREE.MathUtils.lerp(0.6, 1, w);
     if (materialRef.current) materialRef.current.opacity = THREE.MathUtils.lerp(0.02, 1, w);
@@ -454,7 +454,16 @@ export function NeuralCluster() {
   const synapseUniforms = useMemo(() => ({ uTime: { value: 0 } }), []);
 
   useFrame((state) => {
-    if (lineMaterialRef.current) lineMaterialRef.current.uniforms.uTime.value = state.clock.getElapsedTime();
+    if (!lineMaterialRef.current) return;
+    let scale = 1;
+    let wSum = 0;
+    DIMENSIONS.forEach((d, i) => {
+      const w = dimensionWeight(scrollState.current, i);
+      scale += w * (d.timeScale - 1);
+      wSum += w;
+    });
+    if (wSum < 0.08) scale = 1;
+    lineMaterialRef.current.uniforms.uTime.value = state.clock.getElapsedTime() * scale;
   });
 
   return (
