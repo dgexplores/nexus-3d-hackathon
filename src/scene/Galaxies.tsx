@@ -63,6 +63,8 @@ function buildGalaxy(spec: GalaxySpec) {
   const seeds = new Float32Array(spec.count)
   const inner = spec.color.clone()
   const outer = spec.color.clone().lerp(new THREE.Color("#ffffff"), 0.35).multiplyScalar(0.85)
+  const core = new THREE.Color("#ffffff")
+  const edge = new THREE.Color("#ffb86a")
   for (let i = 0; i < spec.count; i++) {
     const r = Math.pow(Math.random(), 0.85) * spec.radius
     const arm = Math.floor(Math.random() * spec.arms)
@@ -75,10 +77,18 @@ function buildGalaxy(spec: GalaxySpec) {
     pos[i * 3 + 1] = y
     pos[i * 3 + 2] = z
     const t = r / spec.radius
-    const c = inner.clone().lerp(outer, Math.pow(t, 0.7))
-    col[i * 3] = c.r
-    col[i * 3 + 1] = c.g
-    col[i * 3 + 2] = c.b
+    let c: THREE.Color
+    if (t < 0.3) {
+      c = core.clone().lerp(inner, t / 0.3)
+    } else if (t < 0.65) {
+      c = inner.clone()
+    } else {
+      c = inner.clone().lerp(edge, (t - 0.65) / 0.35)
+    }
+    const final = c.clone().lerp(outer, Math.pow(t, 0.5))
+    col[i * 3] = final.r
+    col[i * 3 + 1] = final.g
+    col[i * 3 + 2] = final.b
     scales[i] = (0.9 + Math.random() * 1.4) * (1 - t * 0.35)
     seeds[i] = Math.random()
   }
@@ -164,7 +174,12 @@ function Galaxy({ spec }: { spec: GalaxySpec }) {
       {/* dust lane — dark ring inside galaxy */}
       <mesh ref={dustRef} rotation={[Math.PI / 2.2, 0, 0]}>
         <ringGeometry args={[spec.radius * 0.42, spec.radius * 0.58, 64, 1]} />
-        <meshBasicMaterial color="#0a0a14" transparent opacity={0.06} side={THREE.DoubleSide} depthWrite={false} blending={THREE.AdditiveBlending} />
+        <meshBasicMaterial color="#0a0a14" transparent opacity={0.08} side={THREE.DoubleSide} depthWrite={false} blending={THREE.AdditiveBlending} />
+      </mesh>
+      {/* secondary dust lane */}
+      <mesh rotation={[Math.PI / 2.6, 0.7, 0.5]}>
+        <ringGeometry args={[spec.radius * 0.35, spec.radius * 0.5, 64, 1]} />
+        <meshBasicMaterial color="#060610" transparent opacity={0.05} side={THREE.DoubleSide} depthWrite={false} />
       </mesh>
       <points ref={ref} geometry={geom}>
         <shaderMaterial

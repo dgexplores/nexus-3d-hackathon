@@ -369,3 +369,143 @@ export function FogShifter() {
   });
   return null;
 }
+
+// soft circular point texture for star clusters
+const POINT_TEX = (() => {
+  const c = document.createElement("canvas");
+  c.width = 32; c.height = 32;
+  const ctx = c.getContext("2d")!;
+  const g = ctx.createRadialGradient(16, 16, 0, 16, 16, 16);
+  g.addColorStop(0, "rgba(255,255,255,1)");
+  g.addColorStop(0.35, "rgba(255,255,255,0.7)");
+  g.addColorStop(1, "rgba(255,255,255,0)");
+  ctx.fillStyle = g;
+  ctx.fillRect(0, 0, 32, 32);
+  return new THREE.CanvasTexture(c);
+})();
+
+// globular star clusters scattered around each galaxy
+const CLUSTER_OFFSETS: number[][] = [
+  [2.8, 1.2, 1.2], [-2.4, -0.6, -1.4],
+  [2.2, -1.4, 1.8], [-2.8, 1.6, -0.8],
+  [3, -0.2, -2], [-2, 2, 1.5],
+];
+
+export function StarClusters() {
+  const meshes = useMemo(() => {
+    const arr: THREE.Points[] = [];
+    DIMENSIONS.forEach((dim, i) => {
+      const off = CLUSTER_OFFSETS[i];
+      for (let j = 0; j < 2; j++) {
+        const geom = new THREE.BufferGeometry();
+        const count = 70;
+        const pos = new Float32Array(count * 3);
+        const col = new Float32Array(count * 3);
+        for (let k = 0; k < count; k++) {
+          const theta = Math.random() * Math.PI * 2;
+          const phi = Math.acos(2 * Math.random() - 1);
+          const r = 0.12 + Math.random() * 0.28;
+          pos[k * 3] = r * Math.sin(phi) * Math.cos(theta);
+          pos[k * 3 + 1] = r * Math.sin(phi) * Math.sin(theta);
+          pos[k * 3 + 2] = r * Math.cos(phi);
+          const t = Math.random();
+          col[k * 3] = t;
+          col[k * 3 + 1] = t;
+          col[k * 3 + 2] = t;
+        }
+        geom.setAttribute("position", new THREE.BufferAttribute(pos, 3));
+        geom.setAttribute("aColor", new THREE.BufferAttribute(col, 3));
+        const mat = new THREE.PointsMaterial({
+          size: 0.11, map: POINT_TEX, vertexColors: true,
+          transparent: true, opacity: 0.9, depthWrite: false,
+          blending: THREE.AdditiveBlending, sizeAttenuation: true,
+        });
+        const mesh = new THREE.Points(geom, mat);
+        mesh.position.copy(dim.center).add(new THREE.Vector3(off[0], off[1], off[2]));
+        arr.push(mesh);
+      }
+    });
+    return arr;
+  }, []);
+
+  return (
+    <group>
+      {meshes.map((m, i) => (
+        <primitive key={i} object={m} />
+      ))}
+    </group>
+  );
+}
+
+// holographic 3D text projected near each galaxy
+const HOLOGRAMS = [
+  { name: "GLASS", title: "The Shard Sea", color: "#5b8cff" },
+  { name: "PAINT", title: "The Wet Nebula", color: "#7c5bff" },
+  { name: "INK", title: "The Paper Void", color: "#f4f2ff" },
+  { name: "CUBE", title: "The Honeycomb", color: "#ffb35b" },
+  { name: "MIRROR", title: "The Mirror", color: "#ff5bd0" },
+  { name: "DEBRIS", title: "The Wreckage", color: "#8fa3d6" },
+  { name: "FRACTAL", title: "One Sky", color: "#ffffff" },
+];
+
+export function GalaxyHolograms() {
+  const texRefs = useRef<THREE.Sprite[]>([]);
+  const textures = useMemo(() => HOLOGRAMS.map(h => {
+    const c = document.createElement("canvas");
+    c.width = 512; c.height = 256;
+    const ctx = c.getContext("2d")!;
+    ctx.clearRect(0, 0, 512, 256);
+    ctx.shadowColor = h.color;
+    ctx.shadowBlur = 22;
+    ctx.font = "bold 40px Instrument Serif, Georgia, serif";
+    ctx.fillStyle = h.color;
+    ctx.textAlign = "center";
+    ctx.textBaseline = "middle";
+    ctx.fillText(h.title, 256, 78);
+    ctx.shadowBlur = 0;
+    ctx.font = "22px JetBrains Mono, monospace";
+    ctx.fillStyle = h.color;
+    ctx.globalAlpha = 0.85;
+    ctx.fillText(h.name, 256, 148);
+    ctx.globalAlpha = 1.0;
+    ctx.strokeStyle = h.color;
+    ctx.lineWidth = 1.5;
+    ctx.globalAlpha = 0.35;
+    ctx.beginPath();
+    ctx.moveTo(110, 178);
+    ctx.lineTo(398, 178);
+    ctx.stroke();
+    ctx.globalAlpha = 1.0;
+    ctx.fillStyle = h.color;
+    ctx.globalAlpha = 0.5;
+    [110, 398].forEach(x => { ctx.beginPath(); ctx.arc(x, 178, 3, 0, Math.PI * 2); ctx.fill(); });
+    ctx.globalAlpha = 1.0;
+    return new THREE.CanvasTexture(c);
+  }), []);
+
+  useEffect(() => {
+    texRefs.current.forEach(s => { if (s) (s.material as THREE.SpriteMaterial).opacity = 0; });
+  }, []);
+
+  useFrame((state) => {
+    const now = state.clock.elapsedTime;
+    texRefs.current.forEach((sprite, i) => {
+      if (!sprite) return;
+      const w = dimensionWeight(scrollState.current, i);
+      (sprite.material as THREE.SpriteMaterial).opacity = w * 0.88;
+      const pulse = 1 + Math.sin(now * 2.2 + i * 0.9) * 0.04;
+      sprite.scale.set(3.6 * pulse, 1.8 * pulse, 1);
+    });
+  });
+
+  return (
+    <group>
+      {HOLOGRAMS.map((h, i) => (
+        <sprite key={i} ref={el => { texRefs.current[i] = el as THREE.Sprite; }}
+          position={DIMENSIONS[i].center.clone().add(new THREE.Vector3(0, 2.9, 0))}>
+          <spriteMaterial map={textures[i]} color={h.color} transparent blending={THREE.AdditiveBlending} depthWrite={false} />
+        </sprite>
+      ))}
+    </group>
+  );
+}

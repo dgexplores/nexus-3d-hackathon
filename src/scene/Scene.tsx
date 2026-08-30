@@ -19,7 +19,7 @@ import { CameraRig } from "./CameraRig";
 import { Thread } from "./Thread";
 import { Galaxies, Nebulae } from "./Galaxies";
 import { Planets } from "./Planets";
-import { AsteroidBelt, InnerBelt, StarDome, DeepGalaxies, LensDust, DimensionAtmosphere, NebulaOrbs, ShootingStars, FogShifter } from "./SpaceExtension";
+import { AsteroidBelt, InnerBelt, StarDome, DeepGalaxies, LensDust, DimensionAtmosphere, NebulaOrbs, ShootingStars, FogShifter, StarClusters, GalaxyHolograms } from "./SpaceExtension";
 import { DIMENSIONS, dimensionWeight } from "./clusters";
 import { scrollState } from "./scrollStore";
 
@@ -98,6 +98,8 @@ export function Scene() {
       <Nebulae />
       <NebulaOrbs />
       <Galaxies />
+      <StarClusters />
+      <GalaxyHolograms />
       <Planets />
       <AsteroidBelt />
       <InnerBelt />
