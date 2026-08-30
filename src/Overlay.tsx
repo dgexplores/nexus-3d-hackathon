@@ -14,51 +14,51 @@ const ROMAN = ["I", "II", "III", "IV", "V", "VI", "VII"];
 
 const CHAPTERS: Chapter[] = [
   {
-    eyebrow: `${ROMAN[0]}. ${DIMENSIONS[0].name}  •  14 shards  •  blue giant behind`,
-    title: "The shard sea\ncatches every photon.",
-    body: "You’re inside 14 glass facets orbiting the blue galaxy. Light fractures cold — Dutch 12° telephoto — the way starlight does through ice. Precision feels beautiful until you notice nothing here can soften.",
+    eyebrow: `${ROMAN[0]}. ${DIMENSIONS[0].name}`,
+    title: "The shard sea",
+    body: "14 facets • blue galaxy 6.5 ly behind — light fractures cold.",
     align: "left",
     dim: DIMENSIONS[0],
   },
   {
-    eyebrow: `${ROMAN[1]}. ${DIMENSIONS[1].name}  •  viscous nebula  •  1.4 ly smear`,
-    title: "This nebula\nnever dries.",
-    body: "Warm oil-slick colour bleeds across the lens. 13 nodes float in syrup, the camera drags 0.3s behind like you’re swimming. The pink galaxy behind swirls — thoughts here stay wet, unfinished, human.",
+    eyebrow: `${ROMAN[1]}. ${DIMENSIONS[1].name}`,
+    title: "The wet nebula",
+    body: "13 nodes in pink smear • time 0.32× slow — thoughts stay wet.",
     align: "right",
     dim: DIMENSIONS[1],
   },
   {
-    eyebrow: `${ROMAN[2]}. ${DIMENSIONS[2].name}  •  flat paper void  •  white dwarf above`,
-    title: "A mind flattened\nto be read.",
-    body: "Top-down orthographic, no depth, just ink on void. 15 nodes lie like constellations on paper under a white dwarf. We flatten worlds to map them — and lose the air that let them breathe.",
+    eyebrow: `${ROMAN[2]}. ${DIMENSIONS[2].name}`,
+    title: "The paper void",
+    body: "15 nodes flat • white dwarf above — no depth, just map.",
     align: "left",
     dim: DIMENSIONS[2],
   },
   {
-    eyebrow: `${ROMAN[3]}. ${DIMENSIONS[3].name}  •  honeycomb lattice  •  amber planet rings`,
-    title: "A perfect grid\nthat became a cage.",
-    body: "Amber planet with rings watches over a honeycomb. Fisheye 18mm bends the horizon 180°. Every node snaps to 0.35 ly grid — order so complete it can’t imagine anything else. That’s why it traps.",
+    eyebrow: `${ROMAN[3]}. ${DIMENSIONS[3].name}`,
+    title: "The honeycomb",
+    body: "14 nodes grid 0.35 ly • amber rings behind — order traps.",
     align: "right",
     dim: DIMENSIONS[3],
   },
   {
-    eyebrow: `${ROMAN[4]}. ${DIMENSIONS[4].name}  •  kaleido echo  •  6× recursion`,
-    title: "Stare and\nyou become six.",
-    body: "The mirror galaxy duplicates you — 7 nodes mirrored to 28. Vertigo dolly pulls back while lens pushes in. Space itself is a hall of mirrors; every choice you see is you, again.",
+    eyebrow: `${ROMAN[4]}. ${DIMENSIONS[4].name}`,
+    title: "The mirror",
+    body: "7 → 28 mirrored • purple galaxy 6 ly — you become six.",
     align: "left",
     dim: DIMENSIONS[4],
   },
   {
-    eyebrow: `${ROMAN[5]}. ${DIMENSIONS[5].name}  •  debris field  •  0-G wreckage`,
-    title: "Not every orbit\nholds.",
-    body: "Handheld 24fps, dust and wreckage tumbling past the mint planet. 13 nodes drift 1.8 ly wide — this is after a gravity shear. Some environments don’t survive contact. You feel the empty air.",
+    eyebrow: `${ROMAN[5]}. ${DIMENSIONS[5].name}`,
+    title: "The wreckage",
+    body: "13 nodes drift 1.8 ly • mint planet • 24fps — not every orbit holds.",
     align: "right",
     dim: DIMENSIONS[5],
   },
   {
-    eyebrow: `${ROMAN[6]}. ${DIMENSIONS[6].name}  •  all skies at once  •  god view`,
-    title: "Pull back —\none sky holds all.",
-    body: "Crane to 11 ly up: four galaxies, two nebulae, the thread, and the wormhole’s double rings — all in one frame. The white core blows out. It was never doors between worlds. It was one sky wearing masks.",
+    eyebrow: `${ROMAN[6]}. ${DIMENSIONS[6].name}`,
+    title: "One sky",
+    body: "All galaxies in one frame 11 ly up — one sky wearing masks.",
     align: "center",
     dim: DIMENSIONS[6],
   },
@@ -88,15 +88,14 @@ function useInView<T extends HTMLElement>() {
 function ChapterSection({ chapter, index }: { chapter: Chapter; index: number }) {
   const { ref, inView } = useInView<HTMLElement>();
   const hex = `#${chapter.dim.color.getHexString()}`;
-  // relevant data: what you actually see behind you at this scroll position
-  const galaxyData: Record<string, { env: string; human: string }> = {
-    glass: { env: "14 glass shards • 6.5 ly behind blue galaxy (1800 stars, 2 arms)", human: "Light fractures cold — precision that cuts if you hold it" },
-    paint: { env: "13 nodes in pink nebula smear • 1.4 ly viscous • time 0.32× slow", human: "Thoughts stay wet here — nothing dries, nothing settles" },
-    ink: { env: "15 nodes flat on paper • white dwarf 2.2 ly above • no depth", human: "We flatten minds to map them — and lose the air" },
-    cube: { env: "14 nodes snapped to 0.35 ly grid • amber ringed planet behind", human: "Order so perfect it becomes a cage" },
-    mirror: { env: "7 → 28 mirrored nodes • purple galaxy 6 ly behind • kaleido", human: "Stare long enough and you become six" },
-    debris: { env: "13 nodes drifting 1.8 ly • mint planet • 24fps wreckage", human: "Not every orbit holds after contact" },
-    fractal: { env: "All galaxies + nebulae in one frame • white core 2.4 ly", human: "One sky wearing seven masks" },
+  const galaxyData: Record<string, string> = {
+    glass: "1800 stars • 2 arms • 2.2 ly",
+    paint: "1500 stars • 2 arms • 2.0 ly",
+    ink: "1400 stars • 2 arms • 1.6 ly",
+    cube: "1600 stars • 3 arms • 1.9 ly",
+    mirror: "1700 stars • 2 arms • 2.1 ly",
+    debris: "1400 stars • 2 arms • 1.6 ly",
+    fractal: "2000 stars • 3 arms • 2.4 ly",
   };
 
   useEffect(() => {
@@ -115,11 +114,7 @@ function ChapterSection({ chapter, index }: { chapter: Chapter; index: number })
     >
       <div className="chapter-inner">
         <span className="eyebrow chapter-eyebrow">{chapter.eyebrow}</span>
-        <div className="chapter-data">
-          <span className="chapter-data-label">YOU ARE INSIDE</span>
-          <span className="chapter-data-value">{galaxyData[chapter.dim.key]?.env ?? ""}</span>
-          <span className="chapter-data-story">{galaxyData[chapter.dim.key]?.human ?? ""}</span>
-        </div>
+        <span className="chapter-meta">{galaxyData[chapter.dim.key] ?? ""}</span>
         <h2>
           {chapter.title.split("\n").map((line) => (
             <span className="line" key={line}>
