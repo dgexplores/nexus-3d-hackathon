@@ -94,12 +94,12 @@ export function Scene() {
 
       <EffectComposer multisampling={0}>
         <Bloom
-          intensity={1.15}
-          luminanceThreshold={0.3}
+          intensity={0.85}
+          luminanceThreshold={0.45}
           luminanceSmoothing={0.3}
           mipmapBlur
         />
-        <DepthOfField focusDistance={0.02} focalLength={0.05} bokehScale={3} />
+        <DepthOfField focusDistance={0.06} focalLength={0.02} bokehScale={1.4} />
         <ChromaticAberration
           offset={new THREE.Vector2(0.001, 0.001)}
           blendFunction={BlendFunction.NORMAL}
