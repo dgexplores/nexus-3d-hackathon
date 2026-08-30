@@ -16,49 +16,49 @@ const CHAPTERS: Chapter[] = [
   {
     eyebrow: `${ROMAN[0]}. ${DIMENSIONS[0].name}`,
     title: "The shard sea",
-    body: "14 facets • blue galaxy 6.5 ly behind — light fractures cold.",
+    body: "Dutch 12° • 38mm tele • time 0.55× — 14 chrome shards catch the blue galaxy behind. Cold light, no softness.",
     align: "left",
     dim: DIMENSIONS[0],
   },
   {
     eyebrow: `${ROMAN[1]}. ${DIMENSIONS[1].name}`,
     title: "The wet nebula",
-    body: "13 nodes in pink smear • time 0.32× slow — thoughts stay wet.",
+    body: "82mm macro • -6° dutch • time 0.32× syrup — 13 paint nodes drag 0.3s, pink galaxy smears.",
     align: "right",
     dim: DIMENSIONS[1],
   },
   {
     eyebrow: `${ROMAN[2]}. ${DIMENSIONS[2].name}`,
     title: "The paper void",
-    body: "15 nodes flat • white dwarf above — no depth, just map.",
+    body: "14mm orthographic top-down • time 0.45× — 15 papers flat under white dwarf. No depth, just map.",
     align: "left",
     dim: DIMENSIONS[2],
   },
   {
     eyebrow: `${ROMAN[3]}. ${DIMENSIONS[3].name}`,
     title: "The honeycomb",
-    body: "14 nodes grid 0.35 ly • amber rings behind — order traps.",
+    body: "18mm fisheye • roll 180° • time 0.68× — 14 cubes snap to 0.35 ly grid, amber rings watch.",
     align: "right",
     dim: DIMENSIONS[3],
   },
   {
     eyebrow: `${ROMAN[4]}. ${DIMENSIONS[4].name}`,
     title: "The mirror",
-    body: "7 → 28 mirrored • purple galaxy 6 ly — you become six.",
+    body: "58mm vertigo dolly • 3° • time 0.52× — 7 → 28 mirrored, purple galaxy echo. You become six.",
     align: "left",
     dim: DIMENSIONS[4],
   },
   {
     eyebrow: `${ROMAN[5]}. ${DIMENSIONS[5].name}`,
     title: "The wreckage",
-    body: "13 nodes drift 1.8 ly • mint planet • 24fps — not every orbit holds.",
+    body: "50mm handheld • 5° shake • time 1.7× stutter 24fps — 13 tets drift past mint planet.",
     align: "right",
     dim: DIMENSIONS[5],
   },
   {
     eyebrow: `${ROMAN[6]}. ${DIMENSIONS[6].name}`,
     title: "One sky",
-    body: "All galaxies in one frame 11 ly up — one sky wearing masks.",
+    body: "28mm crane 11 ly up • time 0.95× — all 7 galaxies + thread + double torus in one blowout.",
     align: "center",
     dim: DIMENSIONS[6],
   },
@@ -89,13 +89,13 @@ function ChapterSection({ chapter, index }: { chapter: Chapter; index: number })
   const { ref, inView } = useInView<HTMLElement>();
   const hex = `#${chapter.dim.color.getHexString()}`;
   const galaxyData: Record<string, string> = {
-    glass: "1800 stars • 2 arms • 2.2 ly",
-    paint: "1500 stars • 2 arms • 2.0 ly",
-    ink: "1400 stars • 2 arms • 1.6 ly",
-    cube: "1600 stars • 3 arms • 1.9 ly",
-    mirror: "1700 stars • 2 arms • 2.1 ly",
-    debris: "1400 stars • 2 arms • 1.6 ly",
-    fractal: "2000 stars • 3 arms • 2.4 ly",
+    glass: "LENS 38mm TELE • ROLL 12° • TIME 0.55× • 14 shards",
+    paint: "LENS 82mm MACRO • ROLL -6° • TIME 0.32× • 13 paint",
+    ink: "LENS 14mm ORTHO • ROLL 0° • TIME 0.45× • 15 paper",
+    cube: "LENS 18mm FISHEYE • ROLL 180° • TIME 0.68× • 14 cubes",
+    mirror: "LENS 58mm VERTIGO • ROLL 3° • TIME 0.52× • 28 mirror",
+    debris: "LENS 50mm HANDHELD • ROLL 5° • TIME 1.7× • 13 debris",
+    fractal: "LENS 28mm CRANE • ROLL 0° • TIME 0.95× • all skies",
   };
 
   useEffect(() => {
