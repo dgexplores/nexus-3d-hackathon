@@ -88,15 +88,15 @@ function useInView<T extends HTMLElement>() {
 function ChapterSection({ chapter, index }: { chapter: Chapter; index: number }) {
   const { ref, inView } = useInView<HTMLElement>();
   const hex = `#${chapter.dim.color.getHexString()}`;
-  // relevant data: galaxy + planet + thread tied to this dimension
-  const galaxyData: Record<string, string> = {
-    glass: "STARS 1800 • ARMS 2 • R 2.2 ly • CORE blue giant • DUST lane",
-    paint: "STARS 1500 • ARMS 2 • R 2.0 ly • PINK nebula smear",
-    ink: "STARS 1400 • ARMS 2 • R 1.6 ly • WHITE dwarf above",
-    cube: "STARS 1600 • ARMS 3 • R 1.9 ly • AMBER rings",
-    mirror: "STARS 1700 • ARMS 2 • R 2.1 ly • KALEIDO echo",
-    debris: "STARS 1400 • ARMS 2 • R 1.6 ly • MINT planet debris",
-    fractal: "STARS 2000 • ARMS 3 • R 2.4 ly • ALL skies",
+  // relevant data: what you actually see behind you at this scroll position
+  const galaxyData: Record<string, { env: string; human: string }> = {
+    glass: { env: "14 glass shards • 6.5 ly behind blue galaxy (1800 stars, 2 arms)", human: "Light fractures cold — precision that cuts if you hold it" },
+    paint: { env: "13 nodes in pink nebula smear • 1.4 ly viscous • time 0.32× slow", human: "Thoughts stay wet here — nothing dries, nothing settles" },
+    ink: { env: "15 nodes flat on paper • white dwarf 2.2 ly above • no depth", human: "We flatten minds to map them — and lose the air" },
+    cube: { env: "14 nodes snapped to 0.35 ly grid • amber ringed planet behind", human: "Order so perfect it becomes a cage" },
+    mirror: { env: "7 → 28 mirrored nodes • purple galaxy 6 ly behind • kaleido", human: "Stare long enough and you become six" },
+    debris: { env: "13 nodes drifting 1.8 ly • mint planet • 24fps wreckage", human: "Not every orbit holds after contact" },
+    fractal: { env: "All galaxies + nebulae in one frame • white core 2.4 ly", human: "One sky wearing seven masks" },
   };
 
   useEffect(() => {
@@ -116,9 +116,9 @@ function ChapterSection({ chapter, index }: { chapter: Chapter; index: number })
       <div className="chapter-inner">
         <span className="eyebrow chapter-eyebrow">{chapter.eyebrow}</span>
         <div className="chapter-data">
-          <span className="chapter-data-label">ENVIRONMENT</span>
-          <span className="chapter-data-value">{galaxyData[chapter.dim.key] ?? ""}</span>
-          <span className="chapter-data-story">— thread tension {((index + 1) * 0.14).toFixed(2)} • you are inside, not looking</span>
+          <span className="chapter-data-label">YOU ARE INSIDE</span>
+          <span className="chapter-data-value">{galaxyData[chapter.dim.key]?.env ?? ""}</span>
+          <span className="chapter-data-story">{galaxyData[chapter.dim.key]?.human ?? ""}</span>
         </div>
         <h2>
           {chapter.title.split("\n").map((line) => (

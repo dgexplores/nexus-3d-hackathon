@@ -20,6 +20,7 @@ import { Thread } from "./Thread";
 import { Galaxies, Nebulae } from "./Galaxies";
 import { Planets } from "./Planets";
 import { AsteroidBelt, InnerBelt, StarDome, DeepGalaxies, LensDust } from "./SpaceExtension";
+import { ImagePlanes } from "./ImagePlanes";
 import { DIMENSIONS, dimensionWeight } from "./clusters";
 import { scrollState } from "./scrollStore";
 
@@ -92,7 +93,8 @@ export function Scene() {
         <meshStandardMaterial color="#06070d" roughness={0.95} metalness={0} />
       </mesh>
 
-      {/* 8K filled — star dome 8k + deep galaxies + nebulae 5 + galaxies 7 + planets 4 + belts 2 + dust */}
+      {/* 8K filled — your two refs as backdrop: blue dense + pink nebula */}
+      <ImagePlanes />
       <StarDome />
       <DeepGalaxies />
       <Nebulae />
