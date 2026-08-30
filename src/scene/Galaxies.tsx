@@ -2,6 +2,8 @@ import { useMemo, useRef } from "react"
 import { useFrame } from "@react-three/fiber"
 import * as THREE from "three"
 import { snoise } from "../shaders/noise"
+import { DIMENSIONS, dimensionWeight } from "./clusters"
+import { scrollState } from "./scrollStore"
 
 // senior galaxy: procedural spiral points + core glow, no external GLB (free, hackathon-safe)
 // each galaxy is a celestial element with own rotation, color, scale — cinematic multi-orbit
@@ -40,13 +42,14 @@ const galaxyFragment = /* glsl */ `
   }
 `
 
-type GalaxySpec = { center: THREE.Vector3; color: THREE.Color; count: number; radius: number; arms: number; spin: number; scale: number }
+type GalaxySpec = { center: THREE.Vector3; color: THREE.Color; count: number; radius: number; arms: number; spin: number; scale: number; dimIndex: number }
 
+// anchored behind each dimension's cluster, so text "blue giant behind" is literally there
 const SPECS: GalaxySpec[] = [
-  { center: new THREE.Vector3(-6.8, 2.4, -9.5), color: new THREE.Color("#8aa8ff"), count: 1800, radius: 2.2, arms: 2, spin: 0.08, scale: 1 },
-  { center: new THREE.Vector3(7.2, -1.2, -7.8), color: new THREE.Color("#ffb86a"), count: 1600, radius: 1.9, arms: 3, spin: -0.06, scale: 0.92 },
-  { center: new THREE.Vector3(1.2, 5.8, -12.5), color: new THREE.Color("#ff7ac4"), count: 1500, radius: 2.0, arms: 2, spin: 0.05, scale: 0.88 },
-  { center: new THREE.Vector3(-2.8, -4.2, -8.8), color: new THREE.Color("#7cf5d6"), count: 1400, radius: 1.6, arms: 2, spin: 0.07, scale: 0.78 },
+  { center: DIMENSIONS[0].center.clone().add(new THREE.Vector3(0.3, 0.4, -6.5)), color: new THREE.Color("#8aa8ff"), count: 1800, radius: 2.2, arms: 2, spin: 0.08, scale: 1, dimIndex: 0 },
+  { center: DIMENSIONS[1].center.clone().add(new THREE.Vector3(-0.4, 0.2, -6.2)), color: new THREE.Color("#ff7ac4"), count: 1500, radius: 2.0, arms: 2, spin: 0.05, scale: 0.88, dimIndex: 1 },
+  { center: DIMENSIONS[3].center.clone().add(new THREE.Vector3(0.6, 0.8, -5.8)), color: new THREE.Color("#ffb86a"), count: 1600, radius: 1.9, arms: 3, spin: -0.06, scale: 0.92, dimIndex: 3 },
+  { center: DIMENSIONS[5].center.clone().add(new THREE.Vector3(1.2, 0.6, -5.5)), color: new THREE.Color("#7cf5d6"), count: 1400, radius: 1.6, arms: 2, spin: 0.07, scale: 0.78, dimIndex: 5 },
 ]
 
 function buildGalaxy(spec: GalaxySpec) {
@@ -86,16 +89,26 @@ function buildGalaxy(spec: GalaxySpec) {
 function Galaxy({ spec }: { spec: GalaxySpec }) {
   const ref = useRef<THREE.Points>(null)
   const matRef = useRef<THREE.ShaderMaterial>(null)
+  const coreRef = useRef<THREE.Mesh>(null)
   const geom = useMemo(() => buildGalaxy(spec), [spec])
   const uniforms = useMemo(() => ({ uTime: { value: 0 } }), [])
   useFrame((s) => {
     if (matRef.current) matRef.current.uniforms.uTime.value = s.clock.elapsedTime
     if (ref.current) ref.current.rotation.y += spec.spin * 0.0015
+    // aesthetic tie to text: galaxy brightens when its chapter is in view (dimensionWeight)
+    const w = dimensionWeight(scrollState.current, spec.dimIndex)
+    const opacity = 0.14 + w * 0.22
+    const scale = 1 + w * 0.12
+    if (coreRef.current) {
+      const m = coreRef.current.material as THREE.MeshBasicMaterial
+      m.opacity = opacity
+      coreRef.current.scale.setScalar(scale)
+    }
+    if (matRef.current) matRef.current.opacity = 0.55 + w * 0.45
   })
   return (
     <group position={spec.center} scale={spec.scale}>
-      {/* core glow sphere */}
-      <mesh>
+      <mesh ref={coreRef}>
         <sphereGeometry args={[0.22, 24, 24]} />
         <meshBasicMaterial color={spec.color} transparent opacity={0.14} blending={THREE.AdditiveBlending} depthWrite={false} />
       </mesh>
