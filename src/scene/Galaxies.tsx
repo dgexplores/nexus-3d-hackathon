@@ -46,7 +46,7 @@ const SPECS: GalaxySpec[] = [
   { center: DIMENSIONS[3].center.clone().add(new THREE.Vector3(0.6, 0.8, -5.8)), color: new THREE.Color("#ffb86a"), count: 1600, radius: 1.9, arms: 3, spin: -0.06, scale: 0.92, dimIndex: 3 },
   { center: DIMENSIONS[4].center.clone().add(new THREE.Vector3(-0.6, 0.3, -6.0)), color: new THREE.Color("#d8b4fe"), count: 1700, radius: 2.1, arms: 2, spin: 0.06, scale: 0.9, dimIndex: 4 },
   { center: DIMENSIONS[5].center.clone().add(new THREE.Vector3(1.2, 0.6, -5.5)), color: new THREE.Color("#7cf5d6"), count: 1400, radius: 1.6, arms: 2, spin: 0.07, scale: 0.78, dimIndex: 5 },
-  { center: DIMENSIONS[6].center.clone().add(new THREE.Vector3(0.2, 0.3, -7.2)), color: new THREE.Color("#ffffff"), count: 2000, radius: 2.4, arms: 3, spin: 0.03, scale: 1.05, dimIndex: 6 },
+  { center: DIMENSIONS[6].center.clone().add(new THREE.Vector3(0.2, 0.3, -7.2)), color: new THREE.Color("#ffffff"), count: 2200, radius: 2.6, arms: 3, spin: 0.03, scale: 1.25, dimIndex: 6 },
   // deep background galaxies — fill frame like 8K movie, always faint
   { center: new THREE.Vector3(-12, 3, -28), color: new THREE.Color("#6a8cff"), count: 900, radius: 1.4, arms: 2, spin: 0.025, scale: 0.62, dimIndex: 0 },
   { center: new THREE.Vector3(11, -2, -26), color: new THREE.Color("#ff9a5c"), count: 800, radius: 1.3, arms: 2, spin: -0.02, scale: 0.58, dimIndex: 3 },

@@ -19,7 +19,7 @@ import { CameraRig } from "./CameraRig";
 import { Thread } from "./Thread";
 import { Galaxies, Nebulae } from "./Galaxies";
 import { Planets } from "./Planets";
-import { AsteroidBelt, InnerBelt, StarDome, DeepGalaxies, LensDust, DimensionAtmosphere, NebulaOrbs, ShootingStars, FogShifter, StarClusters, GalaxyHolograms } from "./SpaceExtension";
+import { AsteroidBelt, InnerBelt, StarDome, DeepGalaxies, LensDust, DimensionAtmosphere, NebulaOrbs, ShootingStars, FogShifter, StarClusters, GalaxyHolograms, SpaceFill } from "./SpaceExtension";
 import { DIMENSIONS, dimensionWeight } from "./clusters";
 import { scrollState } from "./scrollStore";
 
@@ -69,8 +69,8 @@ export function Scene() {
       dpr={[1, 2]}
       camera={{ fov: 50, position: [0, 1.2, 8.2] }}
     >
-      <color attach="background" args={["#010103"]} />
-      <fogExp2 attach="fog" args={["#010103", 0.04]} />
+      <color attach="background" args={["#060618"]} />
+      <fogExp2 attach="fog" args={["#060618", 0.04]} />
 
       <ambientLight color="#ffffff" intensity={0.3} />
       {/* inspiration multiverse rig: crimson + electric blue */}
@@ -94,6 +94,7 @@ export function Scene() {
 
        <StarDome />
       <DeepGalaxies />
+      <SpaceFill />
       <DimensionAtmosphere />
       <Nebulae />
       <NebulaOrbs />
@@ -114,7 +115,7 @@ export function Scene() {
 
       <EffectComposer multisampling={0}>
         <Bloom
-          intensity={0.85}
+          intensity={1.0}
           luminanceThreshold={0.45}
           luminanceSmoothing={0.3}
           mipmapBlur

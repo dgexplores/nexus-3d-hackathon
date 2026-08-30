@@ -509,3 +509,27 @@ export function GalaxyHolograms() {
     </group>
   );
 }
+
+// Rich colored space fill — nebula washes at the very back to replace dead black
+export function SpaceFill() {
+  return (
+    <group>
+      <mesh position={[0, 0.5, -42]}>
+        <sphereGeometry args={[38, 24, 24]} />
+        <meshBasicMaterial color="#2a1060" transparent opacity={0.10} side={THREE.BackSide} blending={THREE.AdditiveBlending} depthWrite={false} />
+      </mesh>
+      <mesh position={[3, -1, -48]}>
+        <sphereGeometry args={[32, 24, 24]} />
+        <meshBasicMaterial color="#0a2060" transparent opacity={0.08} side={THREE.BackSide} blending={THREE.AdditiveBlending} depthWrite={false} />
+      </mesh>
+      <mesh position={[-2, 1.5, -38]}>
+        <sphereGeometry args={[34, 24, 24]} />
+        <meshBasicMaterial color="#601840" transparent opacity={0.09} side={THREE.BackSide} blending={THREE.AdditiveBlending} depthWrite={false} />
+      </mesh>
+      <mesh position={[-1, -0.5, -52]}>
+        <sphereGeometry args={[40, 24, 24]} />
+        <meshBasicMaterial color="#182858" transparent opacity={0.07} side={THREE.BackSide} blending={THREE.AdditiveBlending} depthWrite={false} />
+      </mesh>
+    </group>
+  );
+}
