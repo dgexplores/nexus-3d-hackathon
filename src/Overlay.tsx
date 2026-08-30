@@ -88,6 +88,16 @@ function useInView<T extends HTMLElement>() {
 function ChapterSection({ chapter, index }: { chapter: Chapter; index: number }) {
   const { ref, inView } = useInView<HTMLElement>();
   const hex = `#${chapter.dim.color.getHexString()}`;
+  // relevant data: galaxy + planet + thread tied to this dimension
+  const galaxyData: Record<string, string> = {
+    glass: "STARS 1800 • ARMS 2 • R 2.2 ly • CORE blue giant • DUST lane",
+    paint: "STARS 1500 • ARMS 2 • R 2.0 ly • PINK nebula smear",
+    ink: "STARS 1400 • ARMS 2 • R 1.6 ly • WHITE dwarf above",
+    cube: "STARS 1600 • ARMS 3 • R 1.9 ly • AMBER rings",
+    mirror: "STARS 1700 • ARMS 2 • R 2.1 ly • KALEIDO echo",
+    debris: "STARS 1400 • ARMS 2 • R 1.6 ly • MINT planet debris",
+    fractal: "STARS 2000 • ARMS 3 • R 2.4 ly • ALL skies",
+  };
 
   useEffect(() => {
     if (!inView) return;
@@ -105,6 +115,11 @@ function ChapterSection({ chapter, index }: { chapter: Chapter; index: number })
     >
       <div className="chapter-inner">
         <span className="eyebrow chapter-eyebrow">{chapter.eyebrow}</span>
+        <div className="chapter-data">
+          <span className="chapter-data-label">ENVIRONMENT</span>
+          <span className="chapter-data-value">{galaxyData[chapter.dim.key] ?? ""}</span>
+          <span className="chapter-data-story">— thread tension {((index + 1) * 0.14).toFixed(2)} • you are inside, not looking</span>
+        </div>
         <h2>
           {chapter.title.split("\n").map((line) => (
             <span className="line" key={line}>
