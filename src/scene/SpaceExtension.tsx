@@ -56,22 +56,21 @@ export function AsteroidBelt() {
 export function StarDome() {
   const ref = useRef<THREE.Points>(null)
   const geom = useMemo(() => {
-    const count = 4000
+    const count = 8000
     const pos = new Float32Array(count * 3)
     const col = new Float32Array(count * 3)
     for (let i = 0; i < count; i++) {
       const theta = Math.random() * Math.PI * 2
       const phi = Math.acos(2 * Math.random() - 1)
-      const r = 38 + Math.random() * 6
+      const r = 38 + Math.random() * 9
       pos[i * 3] = r * Math.sin(phi) * Math.cos(theta)
       pos[i * 3 + 1] = r * Math.sin(phi) * Math.sin(theta) * 0.85
       pos[i * 3 + 2] = r * Math.cos(phi)
-      // 8K color mix: warm + cool stars
       const t = Math.random()
-      if (t < 0.55) { col[i * 3] = 1; col[i * 3 + 1] = 1; col[i * 3 + 2] = 1 }
-      else if (t < 0.75) { col[i * 3] = 0.7; col[i * 3 + 1] = 0.82; col[i * 3 + 2] = 1 }
-      else if (t < 0.88) { col[i * 3] = 1; col[i * 3 + 1] = 0.78; col[i * 3 + 2] = 0.55 }
-      else { col[i * 3] = 0.9; col[i * 3 + 1] = 0.6; col[i * 3 + 2] = 1 }
+      if (t < 0.52) { col[i * 3] = 1; col[i * 3 + 1] = 1; col[i * 3 + 2] = 1 }
+      else if (t < 0.72) { col[i * 3] = 0.68; col[i * 3 + 1] = 0.8; col[i * 3 + 2] = 1 }
+      else if (t < 0.86) { col[i * 3] = 1; col[i * 3 + 1] = 0.76; col[i * 3 + 2] = 0.48 }
+      else { col[i * 3] = 0.88; col[i * 3 + 1] = 0.62; col[i * 3 + 2] = 1 }
     }
     const g = new THREE.BufferGeometry()
     g.setAttribute("position", new THREE.BufferAttribute(pos, 3))
@@ -90,16 +89,80 @@ export function StarDome() {
   )
 }
 
+export function InnerBelt() {
+  const ref = useRef<THREE.InstancedMesh>(null)
+  const dummy = useMemo(() => new THREE.Object3D(), [])
+  const count = 180
+  const data = useMemo(() => {
+    const arr: { pos: THREE.Vector3; rot: THREE.Euler; scale: number; axis: THREE.Vector3; speed: number }[] = []
+    for (let i = 0; i < count; i++) {
+      const angle = Math.random() * Math.PI * 2
+      const radius = 6.2 + Math.random() * 1.8
+      const y = (Math.random() - 0.5) * 0.9
+      const x = Math.cos(angle) * radius
+      const z = Math.sin(angle) * radius
+      arr.push({
+        pos: new THREE.Vector3(x, y, z),
+        rot: new THREE.Euler(Math.random() * Math.PI, Math.random() * Math.PI, Math.random() * Math.PI),
+        scale: 0.022 + Math.random() * 0.045,
+        axis: new THREE.Vector3(Math.random() - 0.5, Math.random() - 0.5, Math.random() - 0.5).normalize(),
+        speed: 0.12 + Math.random() * 0.18,
+      })
+    }
+    return arr
+  }, [])
+  useFrame((_, delta) => {
+    if (!ref.current) return
+    data.forEach((d, i) => {
+      dummy.position.copy(d.pos)
+      const angle = Math.atan2(d.pos.z, d.pos.x) + delta * d.speed * 0.06
+      const r = Math.hypot(d.pos.x, d.pos.z)
+      dummy.position.x = Math.cos(angle) * r
+      dummy.position.z = Math.sin(angle) * r
+      dummy.rotation.set(d.rot.x + delta * d.speed * 0.6, d.rot.y + delta * d.speed * 0.4, d.rot.z)
+      dummy.scale.setScalar(d.scale)
+      dummy.updateMatrix()
+      ref.current!.setMatrixAt(i, dummy.matrix)
+    })
+    ref.current.instanceMatrix.needsUpdate = true
+  })
+  return (
+    <instancedMesh ref={ref} args={[undefined, undefined, count]}>
+      <tetrahedronGeometry args={[1, 0]} />
+      <meshStandardMaterial color="#a8b0c2" roughness={0.92} metalness={0.06} />
+    </instancedMesh>
+  )
+}
+
+export function DeepGalaxies() {
+  const specs = useMemo(() => [
+    { pos: new THREE.Vector3(-14, 4, -28), color: "#8aa8ff", scale: 0.42 },
+    { pos: new THREE.Vector3(13, -3, -26), color: "#ffb86a", scale: 0.38 },
+    { pos: new THREE.Vector3(6, 7, -30), color: "#ff7ac4", scale: 0.35 },
+    { pos: new THREE.Vector3(-8, -6, -24), color: "#7cf5d6", scale: 0.33 },
+    { pos: new THREE.Vector3(0, -8, -22), color: "#c4b5fd", scale: 0.4 },
+  ], [])
+  return (
+    <group>
+      {specs.map((s, i) => (
+        <mesh key={i} position={s.pos} scale={s.scale}>
+          <sphereGeometry args={[1.2, 24, 24]} />
+          <meshBasicMaterial color={s.color} transparent opacity={0.09} blending={THREE.AdditiveBlending} depthWrite={false} />
+        </mesh>
+      ))}
+    </group>
+  )
+}
+
 export function LensDust() {
-  // free graphics: subtle floating dust motes with color — Poly Haven dust feel
   const ref = useRef<THREE.Points>(null)
   const geom = useMemo(() => {
-    const count = 600
+    const count = 1200
     const pos = new Float32Array(count * 3)
     for (let i = 0; i < count; i++) {
-      pos[i * 3] = (Math.random() - 0.5) * 18
-      pos[i * 3 + 1] = (Math.random() - 0.5) * 10
-      pos[i * 3 + 2] = (Math.random() - 0.5) * 18 - 2
+      pos[i * 3] = (Math.random() - 0.5) * 22
+      pos[i * 3 + 1] = (Math.random() - 0.5) * 14
+      pos[i * 3 + 2] = (Math.random() - 0.5) * 22 - 2
     }
     const g = new THREE.BufferGeometry()
     g.setAttribute("position", new THREE.BufferAttribute(pos, 3))
