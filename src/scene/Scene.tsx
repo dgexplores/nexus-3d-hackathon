@@ -1,5 +1,6 @@
 import { useRef } from "react";
 import { Canvas, useFrame } from "@react-three/fiber";
+import { MeshReflectorMaterial } from "@react-three/drei";
 import {
   EffectComposer,
   Bloom,
@@ -82,9 +83,19 @@ export function Scene() {
       <DimensionLights />
       <directionalLight color="#ffffff" intensity={0.5} position={[5, 8, 5]} />
 
-      <mesh position={[0, -6, 0]} rotation={[-Math.PI / 2, 0, 0]} receiveShadow>
+      <mesh position={[0, -3, 0]} rotation={[-Math.PI / 2, 0, 0]} receiveShadow>
         <circleGeometry args={[40, 64]} />
-        <meshStandardMaterial color="#06070d" roughness={0.95} metalness={0} />
+        <MeshReflectorMaterial
+          resolution={512}
+          blur={[280, 100]}
+          mixBlur={1}
+          mixStrength={30}
+          mirror={0.4}
+          roughness={1}
+          depthScale={1.1}
+          minDepthThreshold={0.85}
+          color="#050208"
+        />
       </mesh>
 
       <Portal />
