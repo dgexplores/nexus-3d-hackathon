@@ -1,9 +1,66 @@
 import { useMemo, useRef } from "react"
 import { useFrame } from "@react-three/fiber"
 import * as THREE from "three"
+import { DIMENSIONS, dimensionWeight } from "./clusters"
+import { scrollState } from "./scrollStore"
 
-// free extension: asteroid belt + star dome + lens dust — Poly Haven style procedural, no GLB fetch
-// hackathon key: creativity/aesthetics/wow > tech complexity — this is pure visual wonder, beginner-friendly Three.js
+function makeGlowTexture(): THREE.CanvasTexture {
+  const c = document.createElement("canvas");
+  c.width = 256; c.height = 256;
+  const ctx = c.getContext("2d")!;
+  const g = ctx.createRadialGradient(128, 128, 0, 128, 128, 128);
+  g.addColorStop(0, "rgba(255,255,255,1)");
+  g.addColorStop(0.18, "rgba(255,255,255,0.75)");
+  g.addColorStop(0.5, "rgba(255,255,255,0.2)");
+  g.addColorStop(1, "rgba(255,255,255,0)");
+  ctx.fillStyle = g;
+  ctx.fillRect(0, 0, 256, 256);
+  return new THREE.CanvasTexture(c);
+}
+
+// Cinematic atmospheric glow behind each dimension cluster — movie lighting gel + color wash
+export function DimensionAtmosphere() {
+  const tex = useMemo(makeGlowTexture, []);
+  const groupRef = useRef<THREE.Group>(null);
+
+  useFrame((state) => {
+    const ch = groupRef.current?.children;
+    if (!ch) return;
+    const now = state.clock.elapsedTime;
+    for (let i = 0; i < DIMENSIONS.length; i++) {
+      const w = dimensionWeight(scrollState.current, i);
+      const glow = ch[i * 2] as THREE.Sprite | undefined;
+      const wash = ch[i * 2 + 1] as THREE.Mesh | undefined;
+      if (glow) {
+        (glow.material as THREE.SpriteMaterial).opacity = w * 0.3;
+        const scale = 1 + w * 0.25 + Math.sin(now * 1.8 + i * 0.9) * 0.04;
+        glow.scale.set(20 * scale, 20 * scale, 1);
+      }
+      if (wash) {
+        (wash.material as THREE.MeshBasicMaterial).opacity = w * 0.06;
+      }
+    }
+  });
+
+  return (
+    <group ref={groupRef}>
+      {DIMENSIONS.map((dim) => {
+        const hex = `#${dim.color.getHexString()}`;
+        return (
+          <group key={dim.key}>
+            <sprite position={dim.center.clone().add(new THREE.Vector3(0, 0, -10))}>
+              <spriteMaterial map={tex} color={hex} transparent opacity={0} blending={THREE.AdditiveBlending} depthWrite={false} />
+            </sprite>
+            <mesh position={dim.center.clone().add(new THREE.Vector3(0, 0, -26))}>
+              <planeGeometry args={[34, 34]} />
+              <meshBasicMaterial map={tex} color={hex} transparent opacity={0} blending={THREE.AdditiveBlending} depthWrite={false} side={THREE.DoubleSide} />
+            </mesh>
+          </group>
+        );
+      })}
+    </group>
+  );
+}
 
 export function AsteroidBelt() {
   const ref = useRef<THREE.InstancedMesh>(null)
