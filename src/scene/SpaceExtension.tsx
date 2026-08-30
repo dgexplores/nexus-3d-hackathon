@@ -1,4 +1,4 @@
-import { useMemo, useRef } from "react"
+import { useMemo, useRef, useEffect } from "react"
 import { useFrame } from "@react-three/fiber"
 import * as THREE from "three"
 import { DIMENSIONS, dimensionWeight } from "./clusters"
@@ -23,14 +23,29 @@ export function DimensionAtmosphere() {
   const tex = useMemo(makeGlowTexture, []);
   const groupRef = useRef<THREE.Group>(null);
 
+  useEffect(() => {
+    const ch = groupRef.current?.children;
+    if (!ch) return;
+    for (let i = 0; i < DIMENSIONS.length; i++) {
+      const inner = ch[i] as THREE.Group | undefined;
+      if (!inner) continue;
+      const glow = inner.children[0] as THREE.Sprite | undefined;
+      const wash = inner.children[1] as THREE.Mesh | undefined;
+      if (glow) (glow.material as THREE.SpriteMaterial).opacity = 0;
+      if (wash) (wash.material as THREE.MeshBasicMaterial).opacity = 0;
+    }
+  }, []);
+
   useFrame((state) => {
     const ch = groupRef.current?.children;
     if (!ch) return;
     const now = state.clock.elapsedTime;
     for (let i = 0; i < DIMENSIONS.length; i++) {
+      const inner = ch[i] as THREE.Group | undefined;
+      if (!inner) continue;
+      const glow = inner.children[0] as THREE.Sprite | undefined;
+      const wash = inner.children[1] as THREE.Mesh | undefined;
       const w = dimensionWeight(scrollState.current, i);
-      const glow = ch[i * 2] as THREE.Sprite | undefined;
-      const wash = ch[i * 2 + 1] as THREE.Mesh | undefined;
       if (glow) {
         (glow.material as THREE.SpriteMaterial).opacity = w * 0.3;
         const scale = 1 + w * 0.25 + Math.sin(now * 1.8 + i * 0.9) * 0.04;
@@ -49,11 +64,11 @@ export function DimensionAtmosphere() {
         return (
           <group key={dim.key}>
             <sprite position={dim.center.clone().add(new THREE.Vector3(0, 0, -10))}>
-              <spriteMaterial map={tex} color={hex} transparent opacity={0} blending={THREE.AdditiveBlending} depthWrite={false} />
+              <spriteMaterial map={tex} color={hex} transparent blending={THREE.AdditiveBlending} depthWrite={false} />
             </sprite>
             <mesh position={dim.center.clone().add(new THREE.Vector3(0, 0, -26))}>
               <planeGeometry args={[34, 34]} />
-              <meshBasicMaterial map={tex} color={hex} transparent opacity={0} blending={THREE.AdditiveBlending} depthWrite={false} side={THREE.DoubleSide} />
+              <meshBasicMaterial map={tex} color={hex} transparent blending={THREE.AdditiveBlending} depthWrite={false} side={THREE.DoubleSide} />
             </mesh>
           </group>
         );
