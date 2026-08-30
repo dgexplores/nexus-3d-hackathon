@@ -58,14 +58,15 @@ function Planet({ pos, radius, color, hasRing, moon, dimIndex }: { pos: THREE.Ve
 export function Planets() {
   return (
     <group>
-      {/* white dwarf above Ink paper void */}
       <Planet pos={DIMENSIONS[2].center.clone().add(new THREE.Vector3(1.8, 2.2, -4))} radius={0.62} color="#e2e8f0" dimIndex={2} />
-      {/* amber ringed planet behind Cube lattice */}
       <Planet pos={DIMENSIONS[3].center.clone().add(new THREE.Vector3(1.2, 0.6, -5.2))} radius={0.95} color="#ffb86a" hasRing dimIndex={3} />
-      {/* mint planet behind Debris field */}
       <Planet pos={DIMENSIONS[5].center.clone().add(new THREE.Vector3(1.0, 0.4, -4.8))} radius={0.72} color="#7cf5d6" dimIndex={5} />
-      {/* blue halo planet behind Fractal god view */}
       <Planet pos={DIMENSIONS[6].center.clone().add(new THREE.Vector3(-1.6, 0.8, -6))} radius={0.88} color="#8aa8ff" hasRing moon dimIndex={6} />
+      {/* extra background planets — fill like your nebula image has tiny moon */}
+      <Planet pos={new THREE.Vector3(-11, 2.5, -22)} radius={0.38} color="#f5a3ff" dimIndex={4} />
+      <Planet pos={new THREE.Vector3(9, 1.2, -20)} radius={0.42} color="#7dd3fc" moon dimIndex={0} />
+      <Planet pos={new THREE.Vector3(4, -5, -18)} radius={0.32} color="#fde68a" dimIndex={1} />
+      <Planet pos={new THREE.Vector3(-6, -4, -19)} radius={0.28} color="#a7f3d0" dimIndex={5} />
     </group>
   )
 }

@@ -47,6 +47,13 @@ const SPECS: GalaxySpec[] = [
   { center: DIMENSIONS[4].center.clone().add(new THREE.Vector3(-0.6, 0.3, -6.0)), color: new THREE.Color("#d8b4fe"), count: 1700, radius: 2.1, arms: 2, spin: 0.06, scale: 0.9, dimIndex: 4 },
   { center: DIMENSIONS[5].center.clone().add(new THREE.Vector3(1.2, 0.6, -5.5)), color: new THREE.Color("#7cf5d6"), count: 1400, radius: 1.6, arms: 2, spin: 0.07, scale: 0.78, dimIndex: 5 },
   { center: DIMENSIONS[6].center.clone().add(new THREE.Vector3(0.2, 0.3, -7.2)), color: new THREE.Color("#ffffff"), count: 2000, radius: 2.4, arms: 3, spin: 0.03, scale: 1.05, dimIndex: 6 },
+  // deep background galaxies — fill frame like 8K movie, always faint
+  { center: new THREE.Vector3(-12, 3, -28), color: new THREE.Color("#6a8cff"), count: 900, radius: 1.4, arms: 2, spin: 0.025, scale: 0.62, dimIndex: 0 },
+  { center: new THREE.Vector3(11, -2, -26), color: new THREE.Color("#ff9a5c"), count: 800, radius: 1.3, arms: 2, spin: -0.02, scale: 0.58, dimIndex: 3 },
+  { center: new THREE.Vector3(5, 6, -29), color: new THREE.Color("#ff6ec7"), count: 850, radius: 1.35, arms: 2, spin: 0.02, scale: 0.6, dimIndex: 1 },
+  { center: new THREE.Vector3(-7, -5, -25), color: new THREE.Color("#5cf5d6"), count: 750, radius: 1.25, arms: 2, spin: 0.03, scale: 0.55, dimIndex: 5 },
+  { center: new THREE.Vector3(0, -7, -24), color: new THREE.Color("#c4b5fd"), count: 950, radius: 1.5, arms: 3, spin: -0.018, scale: 0.64, dimIndex: 4 },
+  { center: new THREE.Vector3(14, 2, -30), color: new THREE.Color("#ffffff"), count: 700, radius: 1.2, arms: 2, spin: 0.015, scale: 0.52, dimIndex: 6 },
 ]
 
 function buildGalaxy(spec: GalaxySpec) {
@@ -205,6 +212,9 @@ export function Nebulae() {
     { pos: new THREE.Vector3(-4, 0.6, -17) as THREE.Vector3, scale: [16, 9, 1] as [number, number, number], color: "#ffb86a", dim: 3 },
     { pos: new THREE.Vector3(2, -3, -15) as THREE.Vector3, scale: [15, 10, 1] as [number, number, number], color: "#7cf5d6", dim: 5 },
     { pos: new THREE.Vector3(0, 5, -20) as THREE.Vector3, scale: [26, 16, 1] as [number, number, number], color: "#ffffff", dim: 6 },
+    { pos: new THREE.Vector3(-9, 1, -19) as THREE.Vector3, scale: [20, 12, 1] as [number, number, number], color: "#ff3bb5", dim: 4 },
+    { pos: new THREE.Vector3(7, 3, -21) as THREE.Vector3, scale: [17, 10, 1] as [number, number, number], color: "#a78bfa", dim: 2 },
+    { pos: new THREE.Vector3(-2, -4, -16) as THREE.Vector3, scale: [14, 8, 1] as [number, number, number], color: "#f472b6", dim: 1 },
   ]
 
   return (
