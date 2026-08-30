@@ -11,6 +11,9 @@ export type Dimension = {
   center: THREE.Vector3;
   vibe: string;
   lut: { highlight: THREE.Color; midtone: THREE.Color; shadow: THREE.Color; shadowLift: number };
+  // scroll progress (0..1) where the camera is squarely inside this dimension,
+  // matches CameraRig's waypoint table for D1..D7.
+  scrollPeak: number;
 };
 
 export const DIMENSIONS: Dimension[] = [
@@ -21,6 +24,7 @@ export const DIMENSIONS: Dimension[] = [
     color: new THREE.Color("#5b8cff"),
     center: new THREE.Vector3(3.4, 0.6, -2.0),
     vibe: "Cold, precise, faceted",
+    scrollPeak: 0.14,
     lut: {
       highlight: new THREE.Color("#b8d4ff"),
       midtone: new THREE.Color("#5b8cff"),
@@ -35,6 +39,7 @@ export const DIMENSIONS: Dimension[] = [
     color: new THREE.Color("#7c5bff"),
     center: new THREE.Vector3(-3.6, -0.4, -1.4),
     vibe: "Warm, wet, organic",
+    scrollPeak: 0.27,
     lut: {
       highlight: new THREE.Color("#ffc8e0"),
       midtone: new THREE.Color("#7c5bff"),
@@ -49,6 +54,7 @@ export const DIMENSIONS: Dimension[] = [
     color: new THREE.Color("#f4f2ff"),
     center: new THREE.Vector3(0, 4.2, 0.3),
     vibe: "Minimal, stark, flat",
+    scrollPeak: 0.38,
     lut: {
       highlight: new THREE.Color("#ffffff"),
       midtone: new THREE.Color("#1a1a1a"),
@@ -63,6 +69,7 @@ export const DIMENSIONS: Dimension[] = [
     color: new THREE.Color("#ffb35b"),
     center: new THREE.Vector3(0, -0.2, -3.8),
     vibe: "Grid-locked, impossible order",
+    scrollPeak: 0.5,
     lut: {
       highlight: new THREE.Color("#fff4d6"),
       midtone: new THREE.Color("#ffb35b"),
@@ -77,6 +84,7 @@ export const DIMENSIONS: Dimension[] = [
     color: new THREE.Color("#ff5bd0"),
     center: new THREE.Vector3(-3.0, 1.4, 2.6),
     vibe: "Disorienting, recursive",
+    scrollPeak: 0.63,
     lut: {
       highlight: new THREE.Color("#ffffff"),
       midtone: new THREE.Color("#ff5bd0"),
@@ -91,6 +99,7 @@ export const DIMENSIONS: Dimension[] = [
     color: new THREE.Color("#8fa3d6"),
     center: new THREE.Vector3(2.6, -1.6, 1.4),
     vibe: "Broken, post-collapse",
+    scrollPeak: 0.75,
     lut: {
       highlight: new THREE.Color("#8fa3d6"),
       midtone: new THREE.Color("#4a5a7a"),
@@ -105,6 +114,7 @@ export const DIMENSIONS: Dimension[] = [
     color: new THREE.Color("#ffffff"),
     center: new THREE.Vector3(0, 2.0, -0.5),
     vibe: "Unity, overwhelming scale",
+    scrollPeak: 0.87,
     lut: {
       highlight: new THREE.Color("#ffffff"),
       midtone: new THREE.Color("#ffffff"),
@@ -115,3 +125,27 @@ export const DIMENSIONS: Dimension[] = [
 ];
 
 export const VOID_COLOR = new THREE.Color("#04050c");
+
+// How "in focus" a dimension is right now, 1 at its scrollPeak, fading to 0
+// about a third of the way to its neighbors. Drives opacity, light intensity,
+// and environment color so each dimension reads as its own scene instead of
+// a shared cloud that never resolves into anything specific.
+const FOCUS_FALLOFF = 0.09;
+
+export function dimensionWeight(scroll: number, index: number): number {
+  const dist = Math.abs(scroll - DIMENSIONS[index].scrollPeak);
+  return THREE.MathUtils.clamp(1 - dist / FOCUS_FALLOFF, 0, 1);
+}
+
+export function activeDimensionIndex(scroll: number): number {
+  let best = 0;
+  let bestDist = Infinity;
+  DIMENSIONS.forEach((dim, i) => {
+    const dist = Math.abs(scroll - dim.scrollPeak);
+    if (dist < bestDist) {
+      bestDist = dist;
+      best = i;
+    }
+  });
+  return best;
+}

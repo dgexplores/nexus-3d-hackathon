@@ -1,4 +1,5 @@
-import { Canvas } from "@react-three/fiber";
+import { useRef } from "react";
+import { Canvas, useFrame } from "@react-three/fiber";
 import {
   EffectComposer,
   Bloom,
@@ -15,9 +16,43 @@ import { Portal } from "./Portal";
 import { NeuralCluster } from "./NeuralCluster";
 import { Particles } from "./Particles";
 import { CameraRig } from "./CameraRig";
-import { DIMENSIONS, VOID_COLOR } from "./clusters";
+import { DIMENSIONS, VOID_COLOR, dimensionWeight } from "./clusters";
+import { scrollState } from "./scrollStore";
 
 const WORMHOLE_LIGHT_COLOR = new THREE.Color("#9b7cff").lerp(new THREE.Color("#ff6b9d"), 0.5);
+
+// Boosts each dimension's practical light while the camera is inside it, so
+// the active dimension pops and the rest recede, without touching the scene
+// background/fog objects directly (kept static, that path caused issues).
+function DimensionLights() {
+  const lightRefs = useRef<(THREE.PointLight | null)[]>([]);
+
+  useFrame(() => {
+    DIMENSIONS.forEach((_, i) => {
+      const light = lightRefs.current[i];
+      if (light) light.intensity = 6 + dimensionWeight(scrollState.current, i) * 22;
+    });
+  });
+
+  return (
+    <>
+      {DIMENSIONS.map((dim, i) => (
+        <pointLight
+          key={dim.key}
+          ref={(el) => {
+            lightRefs.current[i] = el;
+          }}
+          position={dim.center}
+          color={dim.color}
+          intensity={11}
+          distance={9}
+          decay={2}
+          castShadow={i < 3}
+        />
+      ))}
+    </>
+  );
+}
 
 export function Scene() {
   return (
@@ -44,17 +79,7 @@ export function Scene() {
         distance={12}
         decay={2}
       />
-      {DIMENSIONS.map((dim, i) => (
-        <pointLight
-          key={dim.key}
-          position={dim.center}
-          color={dim.color}
-          intensity={11}
-          distance={8}
-          decay={2}
-          castShadow={i < 3}
-        />
-      ))}
+      <DimensionLights />
       <directionalLight color="#ffffff" intensity={0.5} position={[5, 8, 5]} />
 
       <mesh position={[0, -6, 0]} rotation={[-Math.PI / 2, 0, 0]} receiveShadow>

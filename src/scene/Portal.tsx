@@ -2,9 +2,13 @@ import { useMemo, useRef } from "react";
 import { useFrame } from "@react-three/fiber";
 import * as THREE from "three";
 import { lensFragment, portalFragment, portalVertex } from "../shaders/portal";
-import { DIMENSIONS } from "./clusters";
+import { DIMENSIONS, activeDimensionIndex, dimensionWeight } from "./clusters";
+import { scrollState } from "./scrollStore";
 
 const CYCLE_COLORS = DIMENSIONS.map((d) => d.color);
+// the portal's own resting hue when no dimension is currently in focus
+// (cold open, or mid-transit between two dimensions), never void-black.
+const WORMHOLE_BASE_COLOR = new THREE.Color("#9b7cff").lerp(new THREE.Color("#5b8cff"), 0.5);
 
 export function Portal() {
   const materialRef = useRef<THREE.ShaderMaterial>(null);
@@ -35,11 +39,14 @@ export function Portal() {
     const t = state.clock.getElapsedTime();
     if (materialRef.current) {
       materialRef.current.uniforms.uTime.value = t;
-      const cycle = (t * 0.05) % CYCLE_COLORS.length;
-      const i = Math.floor(cycle);
-      const next = (i + 1) % CYCLE_COLORS.length;
+
+      const activeIndex = activeDimensionIndex(scrollState.current);
+      const weight = dimensionWeight(scrollState.current, activeIndex);
+      const target = new THREE.Color(WORMHOLE_BASE_COLOR).lerp(CYCLE_COLORS[activeIndex], weight);
+
       const color = materialRef.current.uniforms.uColor.value as THREE.Color;
-      color.lerpColors(CYCLE_COLORS[i], CYCLE_COLORS[next], cycle - i);
+      color.lerp(target, 0.05);
+      materialRef.current.uniforms.uEmissiveIntensity.value = 0.9 + weight * 0.6;
       if (lensMaterialRef.current) {
         lensMaterialRef.current.uniforms.uTime.value = t;
         (lensMaterialRef.current.uniforms.uColor.value as THREE.Color).copy(color);
