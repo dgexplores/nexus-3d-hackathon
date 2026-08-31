@@ -1,28 +1,51 @@
-# NEXUS
+# NEXUS — Jumping Through Minds
 
-A scroll-driven 3D experience built for a "3D Websites" hackathon: a swirling wormhole sits at the center of the scene, tethered to four separate clusters of glowing neural nodes, each its own "universe." Scrolling carries the camera from one cluster to the next while the wormhole stays in view as the thing connecting them all.
+> **Live:** https://nexus-3d-hackathon.vercel.app · **Stack:** React 19 + R3F + GLSL + GSAP
 
-## Concept
+A cinematic, scroll-driven 3D journey through **9 dimensions** — Glass, Paint, Ink, Cube, Mirror, Debris, Fractal, Abyss, Echo — stitched by a central wormhole. Inspired by *Doctor Strange* multiverse traversal and PeachWeb premium landing craft. Built for the **3D Websites** hackathon.
 
-Four parallel minds, one shared connection. Each cluster of nodes is wired internally by pulsing synapse-lines and tethered back to a central, ever-shifting wormhole. The scroll narrative (Ignition → Divergence → Convergence → Singularity) frames it as a journey between universes that were never really separate.
+![NEXUS](https://img.shields.io/badge/3D-R3F%20%2B%20drei-black) ![Shaders](https://img.shields.io/badge/shaders-GLSL%20%2B%20postprocessing-8b5cf6) ![Motion](https://img.shields.io/badge/motion-GSAP%20%2B%20Lenis-38bdf8)
 
-## Stack
+## What judges see
 
-- React + TypeScript + Vite
-- [react-three-fiber](https://github.com/pmndrs/react-three-fiber) / [drei](https://github.com/pmndrs/drei) / [@react-three/postprocessing](https://github.com/pmndrs/react-postprocessing)
-- Hand-written GLSL shaders (wormhole event-horizon swirl, traveling synapse pulses, simplex-noise core)
-- GSAP for the intro title stagger
-- Bloom, chromatic aberration, vignette, and film grain post-processing
+- **Travel cinematic camera** — 21 monotonic waypoints with spring inertia, pointer parallax, handheld jitter on Debris/Fractal, roll + velocity-tilt. No accumulation, delta-based damping.
+- **Premium palette** — ACES film grading per dimension (jewel blues, amber lattice, rose chrome, stone, prismatic gold, abyss slate) with Bloom `0.85/0.52`, ACESFilmic, vignette.
+- **Motion after-effects** — Close asteroids `18× icosahedron 2`, inner belt `180×`, shard storm `26× octahedron`, comet darts `11×` with glowing heads + 512px tails, shooting stars `7×` with streak texture, all additive and scroll-velocity boosted.
+- **Minimal typography with motion** — chapter titles stagger per-word with ScrollTrigger, eyebrow slide, dimension tracker `I GLASS → IX ECHO` at bottom-left, sprocket rail navigation.
 
-## Running locally
+## Quick start
 
 ```bash
 npm install
-npm run dev
+npm run dev    # http://localhost:5173
+npm run build  # tsc -b && vite build
+npm run preview
 ```
 
-## Building
+## Project structure
 
-```bash
-npm run build
 ```
+src/
+  App.tsx            # Lenis + GSAP + scroll tracking
+  Overlay.tsx        # 9 chapters, sprocket rail, dimension tracker
+  scene/
+    CameraRig.tsx    # optimized travel waypoints
+    clusters.ts      # 9 dimensions, colors, scrollPeaks
+    Galaxies.tsx     # shader galaxies + mandalas
+    Planets.tsx      # PBR planets with atmosphere/cloud shaders
+    SpaceExtension.tsx # asteroids / comets / meteors / fills
+    Scene.tsx        # Canvas, lights, EffectComposer
+  shaders/           # portal, fresnel, noise, planetAtmosphere
+```
+
+## Deployment
+
+Auto-deployed on Vercel from `main`:
+
+```
+https://nexus-3d-hackathon.vercel.app
+```
+
+## Credits
+
+Real-time film VFX with React Three Fiber, hand-written GLSL, and GSAP. No templates.

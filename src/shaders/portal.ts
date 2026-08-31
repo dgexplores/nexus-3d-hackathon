@@ -48,12 +48,12 @@ export const portalFragment = /* glsl */ `
     vec3 color = mix(rainbow, banded, bands) * rim * uEmissiveIntensity;
 
     float spark = pow(bands * bands2, 6.0);
-    color += vec3(1.0) * spark * 0.3;
+    color += vec3(1.0) * spark * 0.18;
 
     float fresnel = pow(1.0 - clamp(r, 0.0, 1.0), uFresnelPower);
-    color += mix(uColor, uColorB, 0.5) * fresnel * 0.15;
+    color += mix(uColor, uColorB, 0.5) * fresnel * 0.09;
 
-    float alpha = smoothstep(1.0, 0.55, r);
+    float alpha = smoothstep(1.0, 0.62, r);
     gl_FragColor = vec4(color, alpha);
   }
 `;

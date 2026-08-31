@@ -470,6 +470,54 @@ body::after {
   .sprocket-hole { width: 6px; height: 9px; }
 }
 
+.title-word {
+  display: inline-block;
+  will-change: opacity, transform, filter;
+}
+
+.dim-tracker {
+  position: fixed;
+  bottom: 2rem;
+  left: 2rem;
+  z-index: 10;
+  display: flex;
+  align-items: baseline;
+  gap: 0.5rem;
+  opacity: 0;
+  transform: translateY(8px);
+  transition: opacity 600ms cubic-bezier(0.32,0.72,0,1), transform 600ms cubic-bezier(0.32,0.72,0,1);
+  pointer-events: none;
+}
+.dim-tracker.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+.dim-tracker-num {
+  font-family: var(--font-display);
+  font-size: clamp(2.4rem, 5vw, 3.8rem);
+  font-weight: 700;
+  color: var(--tracker-color, #7dd3fc);
+  line-height: 1;
+  letter-spacing: -0.04em;
+  opacity: 0.35;
+}
+.dim-tracker-divider {
+  width: 2px;
+  height: 2rem;
+  background: var(--tracker-color, #7dd3fc);
+  opacity: 0.25;
+  border-radius: 1px;
+}
+.dim-tracker-name {
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--tracker-color, #7dd3fc);
+  opacity: 0.7;
+  font-weight: 700;
+}
+
 .credits {
   position: relative;
   padding: 6vh 8vw 10vh;

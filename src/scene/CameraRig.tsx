@@ -1,94 +1,111 @@
+import { useRef, useMemo } from "react";
 import { useFrame, useThree } from "@react-three/fiber";
 import * as THREE from "three";
 import { scrollState } from "./scrollStore";
-import { DIMENSIONS } from "./clusters";
 
 type Waypoint = { scroll: number; pos: THREE.Vector3; look: THREE.Vector3; fov: number; roll: number };
-
-function dimLook(index: number): THREE.Vector3 {
-  return DIMENSIONS[index].center.clone().multiplyScalar(0.5);
-}
-
-// Director's Shot List, CINEMATIC_VISION.md section 9.1: nine keyframes from
-// cold open through the seven dimensions and back to the loop tag. Scroll
-// thresholds are not evenly spaced, so interpolation below finds the actual
-// bracketing pair instead of assuming a uniform step.
-const WAYPOINTS: Waypoint[] = [
-  { scroll: 0.0, pos: new THREE.Vector3(0, 1.2, 8.2), look: new THREE.Vector3(0, 0, 0), fov: 50, roll: 0 },
-  { scroll: 0.08, pos: new THREE.Vector3(0.3, 0.8, 6.0), look: new THREE.Vector3(0, 0, 0), fov: 48, roll: 0 },
-  { scroll: 0.14, pos: new THREE.Vector3(1.0, 0.4, 4.5), look: dimLook(0), fov: 38, roll: 12 },
-  { scroll: 0.27, pos: new THREE.Vector3(2.5, -0.3, 3.0), look: dimLook(1), fov: 82, roll: -6 },
-  { scroll: 0.38, pos: new THREE.Vector3(0, 6.0, 0.2), look: dimLook(2), fov: 14, roll: 0 },
-  { scroll: 0.5, pos: new THREE.Vector3(0, 0, 4.0), look: dimLook(3), fov: 18, roll: 180 },
-  { scroll: 0.63, pos: new THREE.Vector3(-2.0, 1.0, 5.0), look: dimLook(4), fov: 58, roll: 3 },
-  { scroll: 0.75, pos: new THREE.Vector3(1.5, -1.0, 3.0), look: dimLook(5), fov: 50, roll: 5 },
-  { scroll: 0.87, pos: new THREE.Vector3(0, 11.0, 0.1), look: dimLook(6), fov: 28, roll: 0 },
-  { scroll: 1.0, pos: new THREE.Vector3(0, 1.2, 8.2), look: new THREE.Vector3(0, 0, 0), fov: 50, roll: 0 },
-];
-
-const tmpPos = new THREE.Vector3();
-const tmpLook = new THREE.Vector3();
-const lookTarget = new THREE.Vector3();
-const velocity = new THREE.Vector3();
-const jitter = new THREE.Vector3();
-let currentFov = WAYPOINTS[0].fov;
-let currentRoll = WAYPOINTS[0].roll;
-
-function findBracket(scroll: number): [Waypoint, Waypoint, number] {
-  let index = 0;
-  for (let i = 0; i < WAYPOINTS.length - 1; i++) {
-    if (scroll >= WAYPOINTS[i].scroll) index = i;
-  }
-  const a = WAYPOINTS[index];
-  const b = WAYPOINTS[Math.min(index + 1, WAYPOINTS.length - 1)];
-  const span = b.scroll - a.scroll;
-  const t = span > 0 ? THREE.MathUtils.clamp((scroll - a.scroll) / span, 0, 1) : 0;
-  return [a, b, t];
-}
 
 export function CameraRig() {
   const { camera, pointer } = useThree();
   const perspCamera = camera as THREE.PerspectiveCamera;
 
-  useFrame((state) => {
-    scrollState.current = THREE.MathUtils.lerp(scrollState.current, scrollState.target, 0.06);
+  const waypoints = useMemo<Waypoint[]>(() => [
+    { scroll: 0.0, pos: new THREE.Vector3(0, 9.5, 17.5), look: new THREE.Vector3(0, 0, -3), fov: 54, roll: 0 },
+    { scroll: 0.06, pos: new THREE.Vector3(1.8, 5.2, 10.2), look: new THREE.Vector3(1.2, 0.2, -2), fov: 50, roll: 2 },
+    { scroll: 0.11, pos: new THREE.Vector3(3.9, 2.4, 5.6), look: new THREE.Vector3(3.4, 0.6, -2.0), fov: 42, roll: 6 },
+    { scroll: 0.14, pos: new THREE.Vector3(3.4, -0.4, 2.2), look: new THREE.Vector3(3.4, 0.6, -2.0), fov: 34, roll: 8 },
+    { scroll: 0.19, pos: new THREE.Vector3(0.8, 2.8, -1.2), look: new THREE.Vector3(-3.6, -0.4, -1.4), fov: 46, roll: -7 },
+    { scroll: 0.27, pos: new THREE.Vector3(-3.8, 1.1, -0.6), look: new THREE.Vector3(-3.6, -0.4, -1.4), fov: 38, roll: -11 },
+    { scroll: 0.33, pos: new THREE.Vector3(-1.6, 6.2, 0.8), look: new THREE.Vector3(0, 4.2, 0.3), fov: 42, roll: 4 },
+    { scroll: 0.38, pos: new THREE.Vector3(0, 10.2, 0.9), look: new THREE.Vector3(0, 4.2, 0.3), fov: 28, roll: 0 },
+    { scroll: 0.44, pos: new THREE.Vector3(0.6, 5.4, -1.1), look: new THREE.Vector3(0, -0.2, -3.8), fov: 44, roll: -6 },
+    { scroll: 0.5, pos: new THREE.Vector3(0.1, -0.6, -3.2), look: new THREE.Vector3(0, -0.2, -3.8), fov: 48, roll: -10 },
+    { scroll: 0.57, pos: new THREE.Vector3(-1.8, 2.2, -1.4), look: new THREE.Vector3(-3.0, 1.4, 2.6), fov: 46, roll: 7 },
+    { scroll: 0.63, pos: new THREE.Vector3(-3.2, 2.6, 3.2), look: new THREE.Vector3(-3.0, 1.4, 2.6), fov: 38, roll: 9 },
+    { scroll: 0.69, pos: new THREE.Vector3(-0.6, 0.4, 2.4), look: new THREE.Vector3(2.6, -1.6, 1.4), fov: 46, roll: -5 },
+    { scroll: 0.75, pos: new THREE.Vector3(2.8, -1.8, 0.9), look: new THREE.Vector3(2.6, -1.6, 1.4), fov: 50, roll: -7 },
+    { scroll: 0.81, pos: new THREE.Vector3(0.9, 3.6, -0.2), look: new THREE.Vector3(0, 2.0, -0.5), fov: 40, roll: 3 },
+    { scroll: 0.87, pos: new THREE.Vector3(0, 12.5, 0.6), look: new THREE.Vector3(0, 2.0, -0.5), fov: 26, roll: 0 },
+    { scroll: 0.9, pos: new THREE.Vector3(0, 7.2, 0.8), look: new THREE.Vector3(0, 2.0, -0.5), fov: 32, roll: -2 },
+    { scroll: 0.92, pos: new THREE.Vector3(0, 2.2, -1.2), look: new THREE.Vector3(0, -4.5, -1.2), fov: 50, roll: 8 },
+    { scroll: 0.95, pos: new THREE.Vector3(0.2, -4.2, -1.6), look: new THREE.Vector3(0, -4.5, -1.2), fov: 56, roll: -8 },
+    { scroll: 0.97, pos: new THREE.Vector3(-1.1, 3.4, -2.0), look: new THREE.Vector3(-1.5, 3.8, -2.8), fov: 42, roll: 6 },
+    { scroll: 1.0, pos: new THREE.Vector3(0, 10.2, 15.5), look: new THREE.Vector3(0, 0, -3), fov: 52, roll: 0 },
+  ], []);
 
-    const [a, b, t] = findBracket(scrollState.current);
+  const stateRef = useRef({
+    velocity: new THREE.Vector3(),
+    lookTarget: new THREE.Vector3(0, 0, -3),
+    tmpPos: new THREE.Vector3(),
+    tmpLook: new THREE.Vector3(),
+    jitter: new THREE.Vector3(),
+    pointerSmooth: new THREE.Vector2(),
+    currentFov: 50,
+    currentRollRad: 0,
+  });
 
-    tmpPos.lerpVectors(a.pos, b.pos, t);
-    tmpLook.lerpVectors(a.look, b.look, t);
+  const findBracket = (scroll: number) => {
+    let idx = 0;
+    for (let i = 0; i < waypoints.length - 1; i++) {
+      if (scroll >= waypoints[i].scroll && scroll < waypoints[i + 1].scroll) { idx = i; break; }
+      if (scroll >= waypoints[i].scroll) idx = i;
+    }
+    const a = waypoints[idx];
+    const b = waypoints[Math.min(idx + 1, waypoints.length - 1)];
+    const span = b.scroll - a.scroll;
+    const tRaw = span > 1e-6 ? (scroll - a.scroll) / span : 0;
+    const t = THREE.MathUtils.clamp(tRaw, 0, 1);
+    const smooth = t * t * (3 - 2 * t);
+    return { a, b, t: smooth } as const;
+  };
+
+  useFrame((frameState, delta) => {
+    const s = stateRef.current;
+    const dt = Math.min(delta, 0.033);
+    const damp = (a: number, b: number, lambda: number) => THREE.MathUtils.lerp(a, b, 1 - Math.exp(-lambda * dt));
+
+    scrollState.current = damp(scrollState.current, scrollState.target, 6.5);
+
+    const { a, b, t } = findBracket(scrollState.current);
+
+    s.tmpPos.lerpVectors(a.pos, b.pos, t);
+    s.tmpLook.lerpVectors(a.look, b.look, t);
     const targetFov = THREE.MathUtils.lerp(a.fov, b.fov, t);
-    const targetRoll = THREE.MathUtils.lerp(a.roll, b.roll, t);
+    const targetRollRad = THREE.MathUtils.degToRad(THREE.MathUtils.lerp(a.roll, b.roll, t));
 
-    // subtle parallax from the pointer, layered on top of the scroll path
-    tmpPos.x += pointer.x * 0.25;
-    tmpPos.y += pointer.y * 0.15;
+    s.pointerSmooth.lerp(pointer, 1 - Math.exp(-4 * dt));
+    s.tmpPos.x += s.pointerSmooth.x * 0.32;
+    s.tmpPos.y += s.pointerSmooth.y * 0.22;
 
-    // handheld jitter, only during the 0.70-0.80 beat
-    if (scrollState.current > 0.7 && scrollState.current < 0.8) {
-      const time = state.clock.elapsedTime;
-      jitter.set(
-        Math.sin(time * 37.1) * 0.015,
-        Math.cos(time * 29.3) * 0.015,
-        Math.sin(time * 41.7) * 0.01,
+    const sc = scrollState.current;
+    if ((sc > 0.72 && sc < 0.80) || (sc > 0.86 && sc < 0.91)) {
+      const tm = frameState.clock.elapsedTime;
+      s.jitter.set(
+        Math.sin(tm * 34) * 0.015,
+        Math.cos(tm * 28) * 0.012,
+        Math.sin(tm * 39) * 0.008
       );
-      tmpPos.add(jitter);
+      s.tmpPos.add(s.jitter);
     }
 
-    // spring-based camera inertia (CINEMATIC_VISION.md section 9.2)
-    velocity.add(tmpPos.clone().sub(camera.position).multiplyScalar(0.08));
-    velocity.multiplyScalar(0.82);
-    camera.position.add(velocity);
+    const toTarget = s.tmpPos.clone().sub(camera.position);
+    s.velocity.add(toTarget.multiplyScalar(7.5 * dt));
+    s.velocity.multiplyScalar(Math.pow(0.12, dt * 60));
+    camera.position.add(s.velocity.clone().multiplyScalar(dt * 60));
 
-    lookTarget.lerp(tmpLook, 0.08);
-    camera.lookAt(lookTarget);
+    s.lookTarget.lerp(s.tmpLook, 1 - Math.exp(-5.2 * dt));
+    camera.lookAt(s.lookTarget);
 
-    currentFov = THREE.MathUtils.lerp(currentFov, targetFov, 0.06);
-    perspCamera.fov = currentFov;
+    s.currentFov = damp(s.currentFov, targetFov, 4.5);
+    perspCamera.fov = s.currentFov;
     perspCamera.updateProjectionMatrix();
 
-    currentRoll = THREE.MathUtils.lerp(currentRoll, targetRoll, 0.06);
-    camera.rotateZ(THREE.MathUtils.degToRad(currentRoll));
+    s.currentRollRad = damp(s.currentRollRad, targetRollRad, 5.0);
+    const basePitch = camera.rotation.x;
+    camera.rotation.z = s.currentRollRad;
+    const vel = s.velocity.length();
+    const targetTilt = THREE.MathUtils.clamp(vel * 0.22, -0.08, 0.08);
+    camera.rotation.x = basePitch + targetTilt;
   });
 
   return null;

@@ -19,9 +19,9 @@ export function Portal() {
       uTime: { value: 0 },
       uColor: { value: new THREE.Color(WORMHOLE_BASE_COLOR) },
       uColorB: { value: new THREE.Color(CYCLE_COLORS[0]) },
-      uTurbulence: { value: 0.5 },
-      uFresnelPower: { value: 2.0 },
-      uEmissiveIntensity: { value: 1.1 },
+      uTurbulence: { value: 0.38 },
+      uFresnelPower: { value: 2.3 },
+      uEmissiveIntensity: { value: 0.58 },
     }),
     [],
   );

@@ -1,6 +1,11 @@
 import { useEffect, useRef, useState } from "react";
-import { DIMENSIONS, type Dimension } from "./scene/clusters";
+import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { DIMENSIONS, type Dimension, activeDimensionIndex } from "./scene/clusters";
+import { scrollState } from "./scene/scrollStore";
 import { jumpTo } from "./scene/scrollStore";
+
+gsap.registerPlugin(ScrollTrigger);
 
 type Chapter = {
   eyebrow: string;
@@ -10,7 +15,7 @@ type Chapter = {
   dim: Dimension;
 };
 
-const ROMAN = ["I", "II", "III", "IV", "V", "VI", "VII"];
+const ROMAN = ["I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX"];
 
 const CHAPTERS: Chapter[] = [
   { eyebrow: `${ROMAN[0]}. ${DIMENSIONS[0].name.split("/")[0].trim().toUpperCase()}`, title: "The shard sea", body: "Cold light. No softness.", align: "left", dim: DIMENSIONS[0] },
@@ -19,15 +24,19 @@ const CHAPTERS: Chapter[] = [
   { eyebrow: `${ROMAN[3]}. ${DIMENSIONS[3].name.split("/")[0].trim().toUpperCase()}`, title: "The honeycomb", body: "Order traps.", align: "right", dim: DIMENSIONS[3] },
   { eyebrow: `${ROMAN[4]}. ${DIMENSIONS[4].name.split("/")[0].trim().toUpperCase()}`, title: "The mirror", body: "You become six.", align: "left", dim: DIMENSIONS[4] },
   { eyebrow: `${ROMAN[5]}. ${DIMENSIONS[5].name.split("/")[0].trim().toUpperCase()}`, title: "The wreckage", body: "Not every orbit holds.", align: "right", dim: DIMENSIONS[5] },
-  { eyebrow: `${ROMAN[6]}. ${DIMENSIONS[6].name.split("/")[0].trim().toUpperCase()}`, title: "One sky", body: "All masks, one sky.", align: "center", dim: DIMENSIONS[6] },
+  { eyebrow: `${ROMAN[6]}. ${DIMENSIONS[6].name.split("/")[0].trim().toUpperCase()}`, title: "The Singularity", body: "Every fracture, one light.", align: "center", dim: DIMENSIONS[6] },
+  { eyebrow: `${ROMAN[7]}. ${DIMENSIONS[7].name.split("/")[0].trim().toUpperCase()}`, title: "The hollow deep", body: "Here light ends. You listen downward.", align: "left", dim: DIMENSIONS[7] },
+  { eyebrow: `${ROMAN[8]}. ${DIMENSIONS[8].name.split("/")[0].trim().toUpperCase()}`, title: "The afterlight", body: "The universe exhales. A pale echo remains.", align: "right", dim: DIMENSIONS[8] },
 ];
 
-function useInView<T extends HTMLElement>() {
-  const ref = useRef<T>(null);
+function ChapterSection({ chapter, index }: { chapter: Chapter; index: number }) {
+  const hex = `#${chapter.dim.color.getHexString()}`;
+  const sectionRef = useRef<HTMLDivElement>(null);
   const [inView, setInView] = useState(false);
+  const titleWordRefs = useRef<(HTMLSpanElement | null)[]>([]);
 
   useEffect(() => {
-    const el = ref.current;
+    const el = sectionRef.current;
     if (!el) return;
     const observer = new IntersectionObserver(
       ([entry]) => {
@@ -40,12 +49,57 @@ function useInView<T extends HTMLElement>() {
     return () => observer.disconnect();
   }, []);
 
-  return { ref, inView };
-}
+  const words = chapter.title.split(" ");
 
-function ChapterSection({ chapter, index }: { chapter: Chapter; index: number }) {
-  const { ref, inView } = useInView<HTMLElement>();
-  const hex = `#${chapter.dim.color.getHexString()}`;
+  useEffect(() => {
+    if (!inView || !sectionRef.current) return;
+    const el = sectionRef.current;
+
+    const ctx = gsap.context(() => {
+      gsap.fromTo(titleWordRefs.current.filter(Boolean),
+        { opacity: 0, y: 28, filter: "blur(8px)" },
+        {
+          opacity: 1, y: 0, filter: "blur(0)",
+          duration: 0.9,
+          ease: "power3.out",
+          stagger: 0.055,
+          scrollTrigger: {
+            trigger: el,
+            start: "top 70%",
+            once: true,
+          }
+        }
+      );
+
+      gsap.fromTo(el.querySelectorAll(".chapter-eyebrow"),
+        { opacity: 0, x: chapter.align === "left" ? -20 : 20 },
+        { opacity: 1, x: 0, duration: 0.7, ease: "power2.out",
+          scrollTrigger: { trigger: el, start: "top 75%", once: true }
+        }
+      );
+
+      gsap.fromTo(el.querySelectorAll("p"),
+        { opacity: 0, y: 16 },
+        { opacity: 1, y: 0, duration: 0.7, ease: "power2.out", delay: 0.3,
+          scrollTrigger: { trigger: el, start: "top 75%", once: true }
+        }
+      );
+
+      if (index === CHAPTERS.length - 1) {
+        const cta = el.querySelector(".cta");
+        if (cta) {
+          gsap.fromTo(cta,
+            { opacity: 0, scale: 0.9 },
+            { opacity: 1, scale: 1, duration: 0.6, ease: "back.out(1.7)",
+              scrollTrigger: { trigger: el, start: "top 80%", once: true }
+            }
+          );
+        }
+      }
+    }, sectionRef);
+
+    return () => { ctx.revert(); };
+  }, [inView, chapter, index]);
 
   useEffect(() => {
     if (!inView) return;
@@ -54,8 +108,8 @@ function ChapterSection({ chapter, index }: { chapter: Chapter; index: number })
   }, [inView, index]);
 
   return (
-    <section
-      ref={ref}
+      <section
+      ref={sectionRef}
       className={`chapter chapter-${chapter.align}`}
       data-index={index}
       data-dim={chapter.dim.key}
@@ -64,9 +118,9 @@ function ChapterSection({ chapter, index }: { chapter: Chapter; index: number })
       <div className="chapter-inner">
         <span className="eyebrow chapter-eyebrow">{chapter.eyebrow}</span>
         <h2>
-          {chapter.title.split("\n").map((line) => (
-            <span className="line" key={line}>
-              {line}
+          {words.map((word, i) => (
+            <span key={i} ref={(el) => { titleWordRefs.current[i] = el; }} className="title-word">
+              {word}{" "}
             </span>
           ))}
         </h2>
@@ -78,6 +132,45 @@ function ChapterSection({ chapter, index }: { chapter: Chapter; index: number })
         )}
       </div>
     </section>
+  );
+}
+
+function DimensionTracker() {
+  const trackerRef = useRef<HTMLDivElement>(null);
+  const numRef = useRef<HTMLSpanElement>(null);
+  const nameRef = useRef<HTMLSpanElement>(null);
+  const [visible, setVisible] = useState(false);
+
+  useEffect(() => {
+    const tracker = trackerRef.current;
+    if (!tracker) return;
+
+    let raf = 0;
+    const tick = () => {
+      const idx = activeDimensionIndex(scrollState.current);
+      const dim = DIMENSIONS[idx];
+      const ch = Math.min(8, Math.floor(idx));
+      if (numRef.current) numRef.current.textContent = ROMAN[ch] || ROMAN[0];
+      if (nameRef.current) nameRef.current.textContent = dim.name.split("/")[0].trim().toUpperCase();
+      raf = requestAnimationFrame(tick);
+    };
+    raf = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(raf);
+  }, []);
+
+  useEffect(() => {
+    const onScroll = () => setVisible(scrollState.current > 0.05);
+    window.addEventListener("scroll", onScroll, { passive: true });
+    onScroll();
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+
+  return (
+    <div ref={trackerRef} className={`dim-tracker ${visible ? "visible" : ""}`}>
+      <span ref={numRef} className="dim-tracker-num">I</span>
+      <span className="dim-tracker-divider" />
+      <span ref={nameRef} className="dim-tracker-name">GLASS</span>
+    </div>
   );
 }
 
@@ -112,6 +205,32 @@ function SprocketProgress() {
   );
 }
 
+function HeroScrollHint() {
+  const hintRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const el = hintRef.current;
+    if (!el) return;
+
+    const ctx = gsap.context(() => {
+      gsap.to(el, {
+        y: 8,
+        opacity: 1,
+        duration: 2.4,
+        ease: "sine.inOut",
+        repeat: -1,
+        yoyo: true,
+      });
+    });
+
+    return () => ctx.revert();
+  }, []);
+
+  return (
+    <div ref={hintRef} className="scroll-hint">↓ TEAR OPEN REALITY</div>
+  );
+}
+
 export function Overlay() {
   return (
     <div className="overlay">
@@ -123,10 +242,12 @@ export function Overlay() {
           <span className="hero-thread-dot" />
           <span className="hero-thread-label">NEXUS — one thread you forgot you were holding</span>
         </div>
-        <p className="scroll-hint gsap-in">↓ TEAR OPEN REALITY</p>
+        <HeroScrollHint />
       </header>
 
       <SprocketProgress />
+
+      <DimensionTracker />
 
       {CHAPTERS.map((chapter, i) => (
         <ChapterSection chapter={chapter} index={i} key={chapter.title} />

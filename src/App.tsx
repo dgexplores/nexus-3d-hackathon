@@ -1,5 +1,6 @@
 import { Suspense, useEffect, useRef, useState } from "react";
 import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
 import Lenis from "lenis";
 import { Scene } from "./scene/Scene";
 import { Overlay } from "./Overlay";
@@ -7,6 +8,8 @@ import { Cursor } from "./Cursor";
 import { ErrorBoundary } from "./ErrorBoundary";
 import { initScrollTracking } from "./scene/scrollStore";
 import "./nexus.css";
+
+gsap.registerPlugin(ScrollTrigger);
 
 function App() {
   const [ready, setReady] = useState(false);
@@ -50,6 +53,17 @@ function App() {
       { opacity: 1, y: 0, duration: 1.1, ease: "power3.out", stagger: 0.12 },
     );
   }, [ready]);
+
+  useEffect(() => {
+    ScrollTrigger.refresh();
+    const onResize = () => ScrollTrigger.refresh();
+    window.addEventListener("resize", onResize);
+    return () => { window.removeEventListener("resize", onResize); };
+  }, [ready]);
+
+  useEffect(() => {
+    return () => { ScrollTrigger.getAll().forEach((st) => st.kill()); };
+  }, []);
 
   return (
     <ErrorBoundary>
