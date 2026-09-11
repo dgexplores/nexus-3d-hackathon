@@ -88,9 +88,9 @@ export function Thread() {
     if (wSum < 0.08) scale = 1
     matRef.current.uniforms.uTime.value = state.clock.elapsedTime * scale
     const vel = Math.abs(scrollState.velocity)
-    matRef.current.uniforms.uPulse.value = 1 + vel * 18
-    // velocity warp: brighten on fast scroll
-    const vWarp = Math.min(0.6, vel * 6)
+    matRef.current.uniforms.uPulse.value = 1 + vel * 6
+    // velocity warp: brighten on fast scroll — softened for aesthetic
+    const vWarp = Math.min(0.35, vel * 2.5)
     matRef.current.uniforms.uColor.value = new THREE.Color("#f4f2ff").lerp(new THREE.Color("#38bdf8"), vWarp)
   })
 

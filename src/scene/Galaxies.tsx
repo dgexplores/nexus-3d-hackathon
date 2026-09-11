@@ -190,7 +190,7 @@ function Galaxy({ spec }: { spec: GalaxySpec }) {
     if (matRef.current) matRef.current.uniforms.uTime.value = s.clock.elapsedTime
     if (ref.current) ref.current.rotation.y += spec.spin * 0.0015
     const w = dimensionWeight(scrollState.current, spec.dimIndex)
-    const opacity = isFractal ? 0.22 + w * 0.38 : 0.14 + w * 0.26
+    const opacity = isFractal ? 0.10 + w * 0.42 : 0.06 + w * 0.34
     const scale = 1 + w * (isFractal ? 0.18 : 0.14)
     if (coreRef.current) {
       const m = coreRef.current.material as THREE.MeshBasicMaterial
@@ -216,11 +216,11 @@ function Galaxy({ spec }: { spec: GalaxySpec }) {
       const m = dustRef.current.material as THREE.MeshBasicMaterial
       m.opacity = (isFractal ? 0.03 + w * 0.07 : 0.06 + w * 0.11)
     }
-    if (matRef.current) matRef.current.opacity = (isFractal ? 0.45 + w * 0.32 : 0.38 + w * 0.30)
+    if (matRef.current) matRef.current.opacity = (isFractal ? 0.18 + w * 0.55 : 0.16 + w * 0.50)
     clusterRefs.forEach((r) => {
       if (r.current) {
         const m = r.current.material as THREE.ShaderMaterial
-        m.opacity = 0.45 + w * 0.55
+        m.opacity = 0.12 + w * 0.60
       }
     })
     // fractal mandalas — slow counter-rotation
@@ -372,7 +372,7 @@ export function Nebulae() {
                 float n = snoise(vec3(p*3.2, uTime*0.04)) * 0.5 + 0.5;
                 float n2 = snoise(vec3(p*1.4 + 0.6, uTime*0.02)) * 0.5 + 0.5;
                 float m = pow(n * n2, 1.25);
-                gl_FragColor = vec4(uColor, m * 0.12);
+                gl_FragColor = vec4(uColor, m * 0.09);
               }
             `,
             transparent: true,

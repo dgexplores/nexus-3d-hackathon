@@ -43,7 +43,7 @@ function ChapterSection({ chapter, index }: { chapter: Chapter; index: number })
         el.classList.toggle("in-view", entry.isIntersecting);
         setInView(entry.isIntersecting);
       },
-      { threshold: 0.4 },
+      { threshold: 0.3 },
     );
     observer.observe(el);
     return () => observer.disconnect();
@@ -60,12 +60,12 @@ function ChapterSection({ chapter, index }: { chapter: Chapter; index: number })
         { opacity: 0, y: 28, filter: "blur(8px)" },
         {
           opacity: 1, y: 0, filter: "blur(0)",
-          duration: 0.9,
+          duration: 0.7,
           ease: "power3.out",
-          stagger: 0.055,
+          stagger: 0.04,
           scrollTrigger: {
             trigger: el,
-            start: "top 70%",
+            start: "top 78%",
             once: true,
           }
         }
@@ -73,15 +73,15 @@ function ChapterSection({ chapter, index }: { chapter: Chapter; index: number })
 
       gsap.fromTo(el.querySelectorAll(".chapter-eyebrow"),
         { opacity: 0, x: chapter.align === "left" ? -20 : 20 },
-        { opacity: 1, x: 0, duration: 0.7, ease: "power2.out",
-          scrollTrigger: { trigger: el, start: "top 75%", once: true }
+        { opacity: 1, x: 0, duration: 0.55, ease: "power2.out",
+          scrollTrigger: { trigger: el, start: "top 80%", once: true }
         }
       );
 
       gsap.fromTo(el.querySelectorAll("p"),
         { opacity: 0, y: 16 },
-        { opacity: 1, y: 0, duration: 0.7, ease: "power2.out", delay: 0.3,
-          scrollTrigger: { trigger: el, start: "top 75%", once: true }
+        { opacity: 1, y: 0, duration: 0.55, ease: "power2.out", delay: 0.15,
+          scrollTrigger: { trigger: el, start: "top 80%", once: true }
         }
       );
 
@@ -126,9 +126,14 @@ function ChapterSection({ chapter, index }: { chapter: Chapter; index: number })
         </h2>
         <p>{chapter.body}</p>
         {index === CHAPTERS.length - 1 && (
-          <a className="cta magnetic" href="#top">
+          <button
+            type="button"
+            className="cta magnetic"
+            style={{ border: "none", cursor: "pointer", fontFamily: "inherit" }}
+            onClick={() => jumpTo(0)}
+          >
             Return to universe zero
-          </a>
+          </button>
         )}
       </div>
     </section>
@@ -176,14 +181,20 @@ function DimensionTracker() {
 
 function SprocketProgress() {
   const [active, setActive] = useState(0);
+  const activeRef = useRef(0);
 
   useEffect(() => {
-    const onActive = (e: Event) => {
-      const custom = e as CustomEvent<{ index: number }>;
-      setActive(custom.detail.index);
+    let raf = 0;
+    const tick = () => {
+      const idx = activeDimensionIndex(scrollState.current);
+      if (idx !== activeRef.current) {
+        activeRef.current = idx;
+        setActive(idx);
+      }
+      raf = requestAnimationFrame(tick);
     };
-    window.addEventListener("nexus-chapter-active", onActive);
-    return () => window.removeEventListener("nexus-chapter-active", onActive);
+    raf = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(raf);
   }, []);
 
   return (

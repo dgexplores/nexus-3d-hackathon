@@ -20,7 +20,7 @@ export const DIMENSIONS: Dimension[] = [
     color: new THREE.Color("#60a5fa"),
     center: new THREE.Vector3(3.4, 0.6, -2.0),
     vibe: "Cold, precise, faceted — diamond dust in vacuum",
-    scrollPeak: 0.14,
+    scrollPeak: 0.12,
     timeScale: 0.55,
     lut: {
       highlight: new THREE.Color("#dbeafe"),
@@ -36,7 +36,7 @@ export const DIMENSIONS: Dimension[] = [
     color: new THREE.Color("#a78bfa"),
     center: new THREE.Vector3(-3.6, -0.4, -1.4),
     vibe: "Warm, wet, oil-slick — pigment that breathes",
-    scrollPeak: 0.27,
+    scrollPeak: 0.22,
     timeScale: 0.32,
     lut: {
       highlight: new THREE.Color("#fce7f3"),
@@ -52,7 +52,7 @@ export const DIMENSIONS: Dimension[] = [
     color: new THREE.Color("#fefce8"),
     center: new THREE.Vector3(0, 4.2, 0.3),
     vibe: "Minimal, stark, flat — sumi on washi",
-    scrollPeak: 0.38,
+    scrollPeak: 0.32,
     timeScale: 0.45,
     lut: {
       highlight: new THREE.Color("#ffffff"),
@@ -68,7 +68,7 @@ export const DIMENSIONS: Dimension[] = [
     color: new THREE.Color("#fbbf24"),
     center: new THREE.Vector3(0, -0.2, -3.8),
     vibe: "Grid-locked, impossible order — amber lattice",
-    scrollPeak: 0.5,
+    scrollPeak: 0.42,
     timeScale: 0.68,
     lut: {
       highlight: new THREE.Color("#fef3c7"),
@@ -84,7 +84,7 @@ export const DIMENSIONS: Dimension[] = [
     color: new THREE.Color("#f472b6"),
     center: new THREE.Vector3(-3.0, 1.4, 2.6),
     vibe: "Disorienting, recursive — rose chrome",
-    scrollPeak: 0.63,
+    scrollPeak: 0.53,
     timeScale: 0.52,
     lut: {
       highlight: new THREE.Color("#ffffff"),
@@ -100,7 +100,7 @@ export const DIMENSIONS: Dimension[] = [
     color: new THREE.Color("#a1a1aa"),
     center: new THREE.Vector3(2.6, -1.6, 1.4),
     vibe: "Broken, post-collapse — stone and rust in orbit",
-    scrollPeak: 0.75,
+    scrollPeak: 0.63,
     timeScale: 1.7,
     lut: {
       highlight: new THREE.Color("#e7e5e4"),
@@ -116,7 +116,7 @@ export const DIMENSIONS: Dimension[] = [
     color: new THREE.Color("#fde68a"),
     center: new THREE.Vector3(0, 2.0, -0.5),
     vibe: "Prismatic singularity — every mind at once",
-    scrollPeak: 0.87,
+    scrollPeak: 0.73,
     timeScale: 0.92,
     lut: {
       highlight: new THREE.Color("#fffbeb"),
@@ -132,7 +132,7 @@ export const DIMENSIONS: Dimension[] = [
     color: new THREE.Color("#0f172a"),
     center: new THREE.Vector3(0, -4.5, -1.2),
     vibe: "Crushing depth — light drowns here",
-    scrollPeak: 0.93,
+    scrollPeak: 0.83,
     timeScale: 1.75,
     lut: {
       highlight: new THREE.Color("#334155"),
@@ -148,7 +148,7 @@ export const DIMENSIONS: Dimension[] = [
     color: new THREE.Color("#f59e0b"),
     center: new THREE.Vector3(-1.5, 3.8, -2.8),
     vibe: "Legend ember — the universe crowns itself",
-    scrollPeak: 0.97,
+    scrollPeak: 0.92,
     timeScale: 0.52,
     lut: {
       highlight: new THREE.Color("#fef3c7"),

@@ -21,7 +21,18 @@ function App() {
     let lenis: Lenis | null = null;
     let raf = 0;
     if (!reduceMotion) {
-      lenis = new Lenis({ duration: 1.15, easing: (t: number) => Math.min(1, 1.001 - Math.pow(2, -10 * t)) });
+      // cinematic slow — longer duration + gentle cubic out, reduced wheel gain
+      // aesthetic: scroll feels like gliding through void, not snapping between dims
+      lenis = new Lenis({
+        duration: 2.6,
+        easing: (t: number) => 1 - Math.pow(1 - t, 3),
+        smoothWheel: true,
+        wheelMultiplier: 0.60,
+        touchMultiplier: 1.35,
+        gestureOrientation: "vertical",
+        syncTouch: false,
+        infinite: false,
+      });
       const tick = (time: number) => { lenis!.raf(time); raf = requestAnimationFrame(tick); };
       raf = requestAnimationFrame(tick);
     }
@@ -50,7 +61,7 @@ function App() {
     gsap.fromTo(
       introRef.current.querySelectorAll(".gsap-in"),
       { opacity: 0, y: 24 },
-      { opacity: 1, y: 0, duration: 1.1, ease: "power3.out", stagger: 0.12 },
+      { opacity: 1, y: 0, duration: 0.9, ease: "power3.out", stagger: 0.09 },
     );
   }, [ready]);
 

@@ -275,7 +275,7 @@ body::after {
 }
 
 .hero {
-  min-height: 100vh;
+  min-height: 120vh;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -359,11 +359,16 @@ body::after {
 @keyframes bob { 0%,100%{transform:translateY(0);opacity:0.55} 50%{transform:translateY(8px);opacity:1} }
 
 .chapter {
-  min-height: 100vh;
+  /* long dwell per dim — more wheel travel = slower perceived flight,
+     finale gets extra room so camera settles instead of skipping */
+  min-height: 175vh;
   display: flex;
   align-items: center;
-  padding: 6vh 8vw;
+  padding: 10vh 8vw;
 }
+/* finale + outro: echo breathes, camera pull-back completes on screen */
+.chapter[data-dim="echo"] { min-height: 230vh; }
+.chapter[data-dim="abyss"] { min-height: 195vh; }
 .chapter-left { justify-content: flex-start; }
 .chapter-right { justify-content: flex-end; }
 .chapter-center { justify-content: center; text-align: center; }
@@ -376,7 +381,7 @@ body::after {
   backdrop-filter: none;
   opacity: 0;
   transform: translateY(14px);
-  transition: opacity 900ms cubic-bezier(0.32,0.72,0,1), transform 900ms cubic-bezier(0.32,0.72,0,1);
+  transition: opacity 650ms cubic-bezier(0.32,0.72,0,1), transform 650ms cubic-bezier(0.32,0.72,0,1);
 }
 .chapter.in-view .chapter-inner {
   opacity: 1;
@@ -520,6 +525,11 @@ body::after {
 
 .credits {
   position: relative;
+  /* outro settle zone — camera finishes wide pull-back while this is visible */
+  min-height: 130vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   padding: 6vh 8vw 10vh;
   text-align: center;
   color: var(--fg-faint);

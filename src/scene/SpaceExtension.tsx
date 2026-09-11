@@ -53,7 +53,7 @@ export function DimensionAtmosphere() {
         glow.scale.set(20 * scale, 20 * scale, 1);
       }
       if (wash) {
-        (wash.material as THREE.MeshBasicMaterial).opacity = w * 0.06;
+        (wash.material as THREE.MeshBasicMaterial).opacity = w * 0.035;
       }
     }
   });
@@ -341,7 +341,7 @@ export function ShootingStars() {
   const st = useMemo(() => METEORS.map(() => ({ progress: Math.random(), angle: Math.random() * Math.PI * 2, dist: 10 + Math.random() * 7 })), []);
 
   useFrame((_, delta) => {
-    const boost = 1 + Math.abs(scrollState.velocity) * 10;
+    const boost = 1 + Math.abs(scrollState.velocity) * 4;
     METEORS.forEach((m, i) => {
       const s = st[i];
       s.progress += delta * m.speed * 0.09 * boost;
@@ -757,7 +757,7 @@ export function CloseAsteroidDivert() {
   }, [])
   useFrame((_, delta) => {
     if (!ref.current) return
-    const boost = 1 + Math.abs(scrollState.velocity) * 22
+    const boost = 1 + Math.abs(scrollState.velocity) * 8
     const active = activeDimensionIndex(scrollState.current)
     data.forEach((d, i) => {
       d.z += delta * d.speed * boost
@@ -839,7 +839,7 @@ export function CometDarts() {
     return t
   }, [])
   useFrame((_, delta) => {
-    const boost = 1 + Math.abs(scrollState.velocity) * 16
+    const boost = 1 + Math.abs(scrollState.velocity) * 6
     cometData.forEach((d, i) => {
       d.z += delta * d.speed * boost
       d.x += delta * d.drift
@@ -935,7 +935,7 @@ export function ShardStorm() {
   })), [])
   useFrame((_, delta) => {
     if (!ref.current) return
-    const boost = 1 + Math.abs(scrollState.velocity) * 20
+    const boost = 1 + Math.abs(scrollState.velocity) * 7
     const wGlass = dimensionWeight(scrollState.current, 0)
     const wPaint = dimensionWeight(scrollState.current, 1)
     const w = Math.max(wGlass, wPaint * 0.75)
@@ -969,19 +969,19 @@ export function SpaceFill() {
     <group>
       <mesh position={[0, 0.5, -42]}>
         <sphereGeometry args={[38, 24, 24]} />
-        <meshBasicMaterial color="#1a0b4a" transparent opacity={0.13} side={THREE.BackSide} blending={THREE.AdditiveBlending} depthWrite={false} />
+        <meshBasicMaterial color="#1a0b4a" transparent opacity={0.10} side={THREE.BackSide} blending={THREE.AdditiveBlending} depthWrite={false} />
       </mesh>
       <mesh position={[3, -1, -48]}>
         <sphereGeometry args={[32, 24, 24]} />
-        <meshBasicMaterial color="#0a1e5a" transparent opacity={0.11} side={THREE.BackSide} blending={THREE.AdditiveBlending} depthWrite={false} />
+        <meshBasicMaterial color="#0a1e5a" transparent opacity={0.08} side={THREE.BackSide} blending={THREE.AdditiveBlending} depthWrite={false} />
       </mesh>
       <mesh position={[-2, 1.5, -38]}>
         <sphereGeometry args={[34, 24, 24]} />
-        <meshBasicMaterial color="#4a1040" transparent opacity={0.12} side={THREE.BackSide} blending={THREE.AdditiveBlending} depthWrite={false} />
+        <meshBasicMaterial color="#4a1040" transparent opacity={0.09} side={THREE.BackSide} blending={THREE.AdditiveBlending} depthWrite={false} />
       </mesh>
       <mesh position={[-1, -0.5, -52]}>
         <sphereGeometry args={[40, 24, 24]} />
-        <meshBasicMaterial color="#0e1a4a" transparent opacity={0.10} side={THREE.BackSide} blending={THREE.AdditiveBlending} depthWrite={false} />
+        <meshBasicMaterial color="#0e1a4a" transparent opacity={0.075} side={THREE.BackSide} blending={THREE.AdditiveBlending} depthWrite={false} />
       </mesh>
       {/* fractal finale wash — subtle warm gold behind singularity */}
       <mesh position={[0.2, 2.2, -46]}>
