@@ -49,3 +49,7 @@ https://nexus-3d-hackathon.vercel.app
 ## Credits
 
 Real-time film VFX with React Three Fiber, hand-written GLSL, and GSAP. No templates.
+
+## Continuous verification
+
+The proposed CI runs npm ci, npm run lint and npm run build on Node.js 22. These are lint/build checks, not browser interaction, visual-regression or performance tests.
